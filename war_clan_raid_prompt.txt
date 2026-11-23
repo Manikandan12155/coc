@@ -1,0 +1,106 @@
+# CLASH OF CLANS - WAR, CWL & RAID WEEKENDS MASTER PRODUCT SPECIFICATION
+# Project: CoC Companion App (React + Tailwind + CoC Proxy API)
+# Player: Kingmaker❤@A (#L9R2LJ9RG) | Clan: Tamil Aadukalam (#2QG2C889G)
+
+================================================================================
+1. CORE OBJECTIVE & USER PAIN POINTS
+================================================================================
+In Clash of Clans, competitive clan progression revolves around 3 major modes:
+1. Classic Clan Wars (War Stars, Win Streaks, Loot Bonus, War Frequency).
+2. Clan War League / CWL (Tier, Medals, Roster Selection, Performance Stars, Shop Priority).
+3. Clan Capital Raid Weekends (Raid Medals, Capital Gold, District Destructions, Trader Strategy).
+
+Currently, in-game UI hides vital strategic metrics:
+- Players don't know exact total war stars contributed vs potential stars.
+- CWL medal yield vs shop buying priority (Hammer of Building vs Hammer of Fighting).
+- Raid medals wasted on wrong items instead of Research Potions / Pet Potions.
+- Clan members' attack compliance (who missed attacks, who got 3 stars).
+
+================================================================================
+2. DETAILED FEATURE BREAKDOWN & ARCHITECTURE
+================================================================================
+
+--------------------------------------------------------------------------------
+PART A: CLAN WAR MASTERY (CLASSIC WARS)
+--------------------------------------------------------------------------------
+- Live Clan War Status:
+  * War State: inWar / preparation / warEnded / notInWar.
+  * Opponent Clan Name, Level, Badge & Score.
+  * Live Star Comparison: [Our Clan Stars] vs [Opponent Clan Stars].
+  * Total Destruction Percentage (%) comparison.
+  * Real-time War Timer Countdown (Remaining Battle Time / Preparation Time).
+- Player War Performance Card:
+  * Total Career War Stars earned (API: player.warStars).
+  * Attacks used (e.g., 2/2 or 1/2 or 0/2 attacks left).
+  * 3-Star Success Rate across recent wars.
+  * Recommended targets based on player Town Hall 18 status and hero levels.
+- Clan War Log & Streaks:
+  * Current War Win Streak.
+  * Total Wars Won, Lost, Tied.
+  * Public War Log toggle check (if war log is public in API).
+
+--------------------------------------------------------------------------------
+PART B: CLAN WAR LEAGUE (CWL) - ELITE LEAGUE HUB
+--------------------------------------------------------------------------------
+- League Tier & Standings:
+  * Clan Current CWL League (e.g., Master I, Champion III, Crystal I).
+  * Group Standings Table (8 clans ranked 1st to 8th by Stars + Destruction %).
+  * Promotion / Demotion Zone indicators (Top 1-2 green promotion, Bottom 2 red demotion).
+- CWL Stars & Bonus Medal Calculator:
+  * Player CWL Star Tracker (1 to 8 stars threshold for full medal rewards).
+  * Exact CWL Medals Earned based on placement & clan tier.
+  * Clan Leader / Co-leader Bonus Medals allocation recommendation algorithm.
+- CWL League Shop Priority Engine:
+  * Hammer of Building (Best value: 120 Medals for 16d TH18 defense upgrade).
+  * Hammer of Fighting / Spells (120 Medals for 14d lab research).
+  * Hammer of Heroes (165 Medals - comparison vs Builder Potion value).
+  * Exclusive CWL Sceneries & Champion Hero Skins tracker.
+
+--------------------------------------------------------------------------------
+PART C: CLAN CAPITAL RAID WEEKENDS
+--------------------------------------------------------------------------------
+- Raid Weekend Live Status:
+  * Raid State: Ongoing (Friday 07:00 UTC to Monday 07:00 UTC) / Ended.
+  * Live Raid Weekend countdown timer.
+  * Total Capital Gold looted by Clan this weekend.
+  * Total Enemy Districts 100% destroyed.
+- Player Raid Performance:
+  * Attacks Used: [6 / 6] (including +1 bonus attack for 3-star district finish).
+  * Total Capital Gold contributed to upgrades.
+  * Estimated Raid Medals payout (typically 1,100 - 1,500+ medals per weekend).
+- Raid Medals Trader Optimization Guide:
+  * Tier S Priority: 3x Research Potions (600 Medals = 3 days off Lab time).
+  * Tier A Priority: 3x Pet Potions (when Pet House is bottleneck).
+  * Tier B Priority: Wall Rings / Clock Tower Potions (Builder Base).
+  * Anti-Waste Rule: Never spend Raid Medals on standard Gold/Elixir resources.
+
+================================================================================
+3. API DATA SOURCES & CONTRACT
+================================================================================
+- Player Endpoint: `/players/{playerTag}`
+  * `warStars`, `warPreference`, `clan.tag`, `clan.name`, `townHallLevel`
+- Current War Endpoint: `/clans/{clanTag}/currentwar`
+  * `state`, `teamSize`, `attacksPerMember`, `battleEndTime`, `clan`, `opponent`
+- War Log Endpoint: `/clans/{clanTag}/warlog`
+  * Historical war outcomes, win streaks, destruction %
+- CWL Group Endpoint: `/clans/{clanTag}/currentwarleaguegroup`
+  * `season`, `clans`, `rounds`, `wars`
+- Capital Raid Seasons Endpoint: `/clans/{clanTag}/capitalraidseasons`
+  * `state`, `startTime`, `endTime`, `capitalTotalLoot`, `raidsCompleted`, `members`
+
+================================================================================
+4. UI/UX DESIGN & MOBILE INTERACTION (COC DARK GAMING THEME)
+================================================================================
+- Deep Charcoal / Obsidian slate background (`#111622`, `#161c28`).
+- Swords & Shields metallic icons with glowing war star badges (`#facc15`).
+- Clan War Live Scoreboard Banner with animated battle pulse.
+- 1-Click "Attack Strategy / Target Recommendation" modal.
+- Tab / Accordion toggles for:
+  [ Clan War ]  [ CWL League Hub ]  [ Raid Weekends ]  [ Medal Trader Shop ]
+
+================================================================================
+5. STRATEGIC AI ADVICE HOOKS
+================================================================================
+- "Current war opponent base scouting & army comp recommendations".
+- "CWL bonus medals fair distribution list based on player stars".
+- "Raid weekend district attack path (Skeleton Park vs Dragon Cliffs 2-shot guide)".
