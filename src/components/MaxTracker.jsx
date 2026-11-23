@@ -6,6 +6,38 @@ import {
 } from 'lucide-react';
 
 export default function MaxTracker({ player }) {
+  // User Interactive Defense Levels (Persisted per Player Tag)
+  const [defenseLevels, setDefenseLevels] = useState(() => {
+    const saved = localStorage.getItem(`coc_defenses_${player.tag}`);
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    // Default estimated mid-stage levels for current Town Hall
+    const initial = {};
+    COC_ASSETS.defenses.forEach(d => {
+      // Default to maxLvl - 1 or maxLvl - 2 based on TH
+      initial[d.name] = Math.max(1, d.maxLvl - 2);
+    });
+    return initial;
+  });
+
+  const handleUpdateDefenseLevel = (defenseName, newLevel, maxLevel) => {
+    const clamped = Math.max(1, Math.min(maxLevel, newLevel));
+    const updated = { ...defenseLevels, [defenseName]: clamped };
+    setDefenseLevels(updated);
+    localStorage.setItem(`coc_defenses_${player.tag}`, JSON.stringify(updated));
+  };
+
+  // Calculate true dynamic remaining defense builder days from user levels
+  const calculatedDefenseDays = Object.entries(defenseLevels).reduce((acc, [name, lvl]) => {
+    const defObj = COC_ASSETS.defenses.find(d => d.name === name);
+    if (!defObj) return acc;
+    const remainingLevels = Math.max(0, defObj.maxLvl - lvl);
+    return acc + (remainingLevels * (defObj.avgDaysPerLvl || 14));
+  }, 0);
+
+  const dynamicTotalBuilderDays = (stats?.heroDays || 2160) + calculatedDefenseDays;
+
   const stats = calculateMaxStats(player);
   const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
 
@@ -18,7 +50,7 @@ export default function MaxTracker({ player }) {
   useEffect(() => {
     localStorage.setItem('coc_active_builders', activeBuilders.toString());
     if (activeBuilders === 0) return;
-    const daysAdjusted = Math.round((stats?.totalBuilderDays || 4040) / activeBuilders);
+    const daysAdjusted = Math.round((dynamicTotalBuilderDays || 4040) / activeBuilders);
     setBuilderTargetMs(Date.now() + daysAdjusted * 86400000);
   }, [totalRemainingDays, activeBuilders]);
 
@@ -272,6 +304,12 @@ export default function MaxTracker({ player }) {
   };
 
   const renderGenericStaticCard = (item) => {
+    const currentLvl = defenseLevels[item.name] ?? Math.max(1, item.maxLvl - 2);
+    const remainingLvl = Math.max(0, item.maxLvl - currentLvl);
+    const isMax = remainingLvl === 0;
+    const estDays = remainingLvl * (item.avgDaysPerLvl || 14);
+    const pct = Math.round((currentLvl / item.maxLvl) * 100);
+
     return (
       <div
         key={item.name}
@@ -297,15 +335,59 @@ export default function MaxTracker({ player }) {
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-center mb-1 text-xs">
             <span className="font-semibold text-slate-100 tracking-wide truncate">{item.name}</span>
+            
+            {/* Interactive Level Stepper (+ / -) */}
             <div className="flex items-center gap-1.5 font-mono text-xs">
-              <span className="text-gray-400">Target</span>
-              <span className="font-bold text-amber-300">Max Lv {item.maxLvl}</span>
+              <div className="flex items-center bg-[#10151f] rounded-lg border border-white/10 p-0.5">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdateDefenseLevel(item.name, currentLvl - 1, item.maxLvl);
+                  }}
+                  disabled={currentLvl <= 1}
+                  className="w-5 h-5 rounded flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent font-bold text-sm"
+                >
+                  -
+                </button>
+                <span className={`px-2 font-bold text-xs ${isMax ? 'text-emerald-400' : 'text-amber-300'}`}>
+                  Lv {currentLvl}/{item.maxLvl}
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdateDefenseLevel(item.name, currentLvl + 1, item.maxLvl);
+                  }}
+                  disabled={currentLvl >= item.maxLvl}
+                  className="w-5 h-5 rounded flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent font-bold text-sm"
+                >
+                  +
+                </button>
+              </div>
+              {isMax && (
+                <span className="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-bold border border-emerald-500/30">
+                  MAX
+                </span>
+              )}
             </div>
           </div>
-          <p className="text-[11px] text-gray-400 line-clamp-1 mb-1 font-medium">{item.desc}</p>
-          <div className="flex justify-between items-center text-[10px] text-gray-500">
-            <span>Priority: <strong className="text-amber-400">Tier {item.priority || 3}</strong></span>
-            <span className="font-mono">~{item.avgDaysPerLvl || 14}d / upgrade</span>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-[#111622] rounded-full h-1.5 overflow-hidden border border-white/5 mb-1.5">
+            <div
+              className={`h-full transition-all duration-300 ${
+                isMax ? 'bg-emerald-400' : 'bg-gradient-to-r from-blue-500 to-amber-400'
+              }`}
+              style={{ width: `${Math.min(100, Math.max(5, pct))}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between items-center text-[10px] text-gray-400">
+            <span>Priority: <strong className="text-amber-400">Tier {item.priority || 3}</strong> • {item.desc}</span>
+            {!isMax ? (
+              <span className="font-mono text-gray-300 font-semibold">~{estDays}d ({remainingLvl} left)</span>
+            ) : (
+              <span className="font-mono text-emerald-400 font-semibold">100% Maxed</span>
+            )}
           </div>
         </div>
       </div>
@@ -401,7 +483,7 @@ export default function MaxTracker({ player }) {
 
           <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
             <span className="font-semibold text-amber-300">Target: {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}</span>
-            <span className="font-mono text-gray-400">~{Math.round((stats?.totalBuilderDays || 4040) / Math.max(1, activeBuilders))}d left ({activeBuilders} Builders)</span>
+            <span className="font-mono text-gray-400">~{Math.round((dynamicTotalBuilderDays || 4040) / Math.max(1, activeBuilders))}d left ({activeBuilders} Builders)</span>
           </div>
 
           {renderCountdownBoxes(builderUnits, activeBuilders > 0)}
