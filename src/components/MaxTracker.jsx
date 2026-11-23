@@ -206,23 +206,6 @@ export default function MaxTracker({ player, onAskAI }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-[#141a24] p-3 rounded-xl border border-[#263040] flex items-center gap-2.5">
-            <img src={COC_ASSETS.icons.darkElixir} alt="Dark Elixir" className="w-7 h-7 object-contain shrink-0" />
-            <div>
-              <div className="text-[10px] text-purple-300 font-medium uppercase tracking-wide">Est. Dark Elixir</div>
-              <div className="text-sm font-semibold text-white font-mono">
-                {formatNumber(stats?.estDarkElixirNeeded || 0)}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[#141a24] p-3 rounded-xl border border-[#263040] flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0 text-sm">
-              🔨
-            </div>
-            <div>
-              <div className="text-[10px] text-amber-300 font-medium uppercase tracking-wide">Est. Builder Time</div>
               <div className="text-sm font-semibold text-white font-mono">
                 ~{stats?.estDaysWithThreeBuilders || 0} Days
               </div>
