@@ -12,9 +12,9 @@ export default function MaxTracker({ player, onAskAI }) {
   const [activeFilter, setActiveFilter] = useState('all');
 
   const [openSections, setOpenSections] = useState({
-    quickWins: true,
-    heroes: true,
-    defenses: true,
+    quickWins: false,
+    heroes: false,
+    defenses: false,
     traps: false,
     buildings: false,
     economy: false,
