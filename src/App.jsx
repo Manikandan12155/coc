@@ -18,8 +18,8 @@ export default function App() {
   const [clan, setClan] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loadData = async (tagToFetch = playerTag) => {
-    setLoading(true);
+  const loadData = async (tagToFetch = playerTag, isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const p = await fetchCoCPlayerData(tagToFetch);
       setPlayer(p);
@@ -31,15 +31,26 @@ export default function App() {
       }
     } catch (err) {
       console.error(err);
-      alert(`Player Tag find panna mudiyala bro: ${err.message}`);
+      if (!isSilent) {
+        alert(`Player Tag find panna mudiyala bro: ${err.message}`);
+      }
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+
+    // 2-Minute Smart Auto-Sync (Only when tab is visible)
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadData(playerTag, true);
+      }
+    }, 120000); // 2 minutes
+
+    return () => clearInterval(interval);
+  }, [playerTag]);
 
   const handleTagSubmit = (e) => {
     e.preventDefault();

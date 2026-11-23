@@ -9,15 +9,26 @@ import {
 export default function MaxTracker({ player, onAskAI }) {
   const stats = calculateMaxStats(player);
   const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
-  const [targetTimeMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
+  const [activeBuilders, setActiveBuilders] = useState(() => {
+    return parseInt(localStorage.getItem('coc_active_builders') || '5', 10);
+  });
   const [now, setNow] = useState(Date.now());
+  const [targetTimeMs, setTargetTimeMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
 
   useEffect(() => {
+    localStorage.setItem('coc_active_builders', activeBuilders.toString());
+    if (activeBuilders === 0) return;
+    const daysAdjusted = Math.round((stats?.totalBuilderDays || 4040) / activeBuilders);
+    setTargetTimeMs(Date.now() + daysAdjusted * 86400000);
+  }, [totalRemainingDays, activeBuilders]);
+
+  useEffect(() => {
+    if (activeBuilders === 0) return;
     const timer = setInterval(() => {
       setNow(Date.now());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeBuilders]);
 
   const diffMs = Math.max(0, targetTimeMs - now);
   const totalSecs = Math.floor(diffMs / 1000);
@@ -231,12 +242,50 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
         {/* â ³ LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
         <div className="mt-3 p-3 bg-[#111622] rounded-xl border border-amber-500/30 shadow-inner">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-white/5">
             <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>LIVE REAL-TIME COUNTDOWN TO 100% ZERO-UPGRADE MAX</span>
+              <span className={`w-2 h-2 rounded-full ${activeBuilders > 0 ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
+              <span>{activeBuilders > 0 ? `LIVE COUNTDOWN (${activeBuilders} BUILDERS WORKING)` : 'COUNTDOWN PAUSED (ALL BUILDERS IDLE)'}</span>
             </span>
-            <span className="text-[10px] text-gray-400 font-mono">Ticking Live</span>
+            <span className="text-[10px] bg-emerald-950/70 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-medium flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              Auto-Sync: 2m
+            </span>
+          </div>
+
+          {/* Builder Working Status Controller */}
+          <div className="flex items-center justify-between bg-[#161c28] p-2 rounded-lg mb-2.5 border border-white/5 text-xs">
+            <div className="flex items-center gap-1.5">
+              <Hammer size={14} className={activeBuilders > 0 ? 'text-amber-400' : 'text-gray-500'} />
+              <span className="text-[11px] font-semibold text-gray-300">Active Working Builders:</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {[5, 4, 3, 2, 1].map(n => (
+                <button
+                  key={n}
+                  onClick={() => setActiveBuilders(n)}
+                  className={`w-6 h-6 rounded text-xs font-bold transition-all ${
+                    activeBuilders === n
+                      ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                      : 'bg-[#20293a] text-gray-400 hover:text-white'
+                  }`}
+                  title={`${n} Builders Working`}
+                >
+                  {n}
+                </button>
+              ))}
+              <button
+                onClick={() => setActiveBuilders(0)}
+                className={`px-2 h-6 rounded text-[11px] font-bold transition-all ${
+                  activeBuilders === 0
+                    ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
+                    : 'bg-[#20293a] text-gray-400 hover:text-red-400'
+                }`}
+                title="Pause Countdown"
+              >
+                ⏸ Idle
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-6 gap-1 text-center font-mono">
