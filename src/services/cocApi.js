@@ -66,57 +66,75 @@ export async function fetchClanData(clanTag) {
 }
 
 // COMPLETE ALL-IN-ONE 100% VILLAGE MAX CALCULATION (Heroes + Defenses + Buildings + Troops + Spells + Walls)
+// Accurate Calculation for 100% Zero-Upgrade Village Max
 export function calculateMaxStats(player) {
   if (!player) return null;
 
-  // 1. HEROES
+  // 1. HEROES (Builders)
   const heroes = player.heroes || [];
+  const homeHeroes = heroes.filter(h => h.village === 'home');
   let totalHeroLevels = 0;
   let currentHeroLevels = 0;
-  heroes.forEach(h => {
+  homeHeroes.forEach(h => {
     totalHeroLevels += h.maxLevel || 0;
     currentHeroLevels += h.level || 0;
   });
   const heroRemainingLevels = Math.max(0, totalHeroLevels - currentHeroLevels);
-  const heroDays = heroRemainingLevels * 7.5; // ~7.5 days avg per hero level
+  const heroDays = heroRemainingLevels * 8; // ~8 days avg per high-level hero
 
-  // 2. TROOPS (Laboratory)
-  const troops = player.troops || [];
-  let totalTroopLevels = 0;
-  let currentTroopLevels = 0;
-  troops.forEach(t => {
-    totalTroopLevels += t.maxLevel || 0;
-    currentTroopLevels += t.level || 0;
-  });
-  const troopRemainingLevels = Math.max(0, totalTroopLevels - currentTroopLevels);
-  const labDays = troopRemainingLevels * 11; // ~11 days avg in Lab
-
-  // 3. DEFENSES & BUILDINGS ESTIMATE (TH18 Base Architecture)
-  // At TH18, there are ~120 defense upgrades + ~45 army/resource upgrades left for mid-stage TH18
+  // 2. DEFENSES & BUILDINGS (Builders)
   const estimatedRemainingDefenseUpgrades = 115;
   const defenseDays = estimatedRemainingDefenseUpgrades * 16; // ~16 days per late-stage defense
 
-  // 4. TOTAL VILLAGE BUILDER DAYS
-  // Total work = Hero builder days + Defense/Building days
+  // TOTAL VILLAGE BUILDER DAYS (Heroes + Defenses)
   const totalBuilderDays = heroDays + defenseDays;
-
-  // With 6 Builders working simultaneously 24/7 (5 Home Village + 1 B.O.B 6th Builder):
   const estDaysWithFiveBuilders = Math.round(totalBuilderDays / 5);
 
-  // 5. OVERALL VILLAGE COMPLETION PERCENTAGE (True 100% Max Progress)
-  const totalVillageEntities = totalHeroLevels + totalTroopLevels + 350; // 350 includes all defense tiers & walls
-  const currentVillageEntities = currentHeroLevels + currentTroopLevels + 165;
-  const overallVillagePct = Math.min(99, Math.round((currentVillageEntities / totalVillageEntities) * 100));
+  // 3. LABORATORY (Troops + Spells + Siege Machines) - Works in Parallel in Lab!
+  const allTroops = player.troops || [];
+  const homeTroops = allTroops.filter(t => t.village === 'home');
+  const siegeNames = ['Wall Wrecker', 'Battle Blimp', 'Stone Slammer', 'Siege Barracks', 'Log Launcher', 'Flame Flinger', 'Battle Drill'];
+  const petNames = ['L.A.S.S.I', 'Electro Owl', 'Mighty Yak', 'Unicorn', 'Frosty', 'Diggy', 'Poison Lizard', 'Phoenix', 'Spirit Fox', 'Angry Jelly', 'Snoop'];
+  
+  // Regular troops & sieges upgraded in Lab
+  const labTroops = homeTroops.filter(t => !petNames.includes(t.name) && !t.name.startsWith('Super'));
+  const spells = (player.spells || []).filter(s => s.village === 'home');
+  const labItems = [...labTroops, ...spells];
+
+  let labTotalLevels = 0;
+  let labCurrentLevels = 0;
+  labItems.forEach(item => {
+    labTotalLevels += item.maxLevel || 0;
+    labCurrentLevels += item.level || 0;
+  });
+  const labRemainingLevels = Math.max(0, labTotalLevels - labCurrentLevels);
+  const labDays = Math.round(labRemainingLevels * 10); // ~10 days avg in Lab
+
+  // 4. PET HOUSE (Pets upgraded 1 by 1 in Pet House)
+  const pets = homeTroops.filter(t => petNames.includes(t.name));
+  let petTotalLevels = 0;
+  let petCurrentLevels = 0;
+  pets.forEach(p => {
+    petTotalLevels += p.maxLevel || 0;
+    petCurrentLevels += p.level || 0;
+  });
+  const petRemainingLevels = Math.max(0, petTotalLevels - petCurrentLevels);
+  const petDays = Math.round(petRemainingLevels * 7.5); // ~7.5 days avg in Pet House
+
+  // 5. OVERALL VILLAGE PERCENTAGE
+  const totalEntities = totalHeroLevels + labTotalLevels + petTotalLevels + 350;
+  const currentEntities = currentHeroLevels + labCurrentLevels + petCurrentLevels + 165;
+  const overallVillagePct = Math.min(99, Math.round((currentEntities / totalEntities) * 100));
 
   // 6. TOTAL RESOURCE COSTS TO BE 100% MAXED
-  const deHeroes = heroes.filter(h => ['Barbarian King', 'Archer Queen', 'Royal Champion', 'Minion Prince'].includes(h.name));
+  const deHeroes = homeHeroes.filter(h => ['Barbarian King', 'Archer Queen', 'Royal Champion', 'Minion Prince'].includes(h.name));
   let remainingDeLevels = 0;
   deHeroes.forEach(h => {
     remainingDeLevels += Math.max(0, (h.maxLevel || 0) - (h.level || 0));
   });
-  const estDarkElixirNeeded = remainingDeLevels * 260000;
-  const estGoldNeeded = estimatedRemainingDefenseUpgrades * 21000000; // ~21M gold avg per TH17/TH18 defense
-  const estElixirNeeded = troopRemainingLevels * 16000000; // ~16M elixir avg per lab upgrade
+  const estDarkElixirNeeded = remainingDeLevels * 260000 + (petRemainingLevels * 210000);
+  const estGoldNeeded = estimatedRemainingDefenseUpgrades * 21000000;
+  const estElixirNeeded = labRemainingLevels * 16000000;
 
   return {
     overallVillagePct,
@@ -126,8 +144,13 @@ export function calculateMaxStats(player) {
     estGoldNeeded,
     estElixirNeeded,
     totalBuilderDays,
-    estDaysWithFiveBuilders, // Real-time remaining days with 5 active builders (1 free for walls/exception)
+    estDaysWithFiveBuilders, // Real-time remaining days with 5 active builders
+    heroDays,
+    defenseDays,
     labDays,
+    labRemainingLevels,
+    petDays,
+    petRemainingLevels,
     heroes
   };
 }
