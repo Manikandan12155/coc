@@ -3,7 +3,6 @@ import { MessageSquare, Shield, Swords, Calendar } from 'lucide-react';
 
 export default function Navigation({ activeTab, setActiveTab }) {
   const tabs = [
-    { id: 'chat', label: 'AI Oracle', icon: MessageSquare },
     { id: 'progress', label: 'Village Max', icon: Shield },
     { id: 'clan', label: 'War & Clan', icon: Swords },
     { id: 'events', label: 'Events', icon: Calendar },

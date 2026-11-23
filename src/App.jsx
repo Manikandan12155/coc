@@ -8,7 +8,7 @@ import { fetchCoCPlayerData, fetchClanData } from './services/cocApi';
 import { RefreshCw, Search, X } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('chat');
+  const [activeTab, setActiveTab] = useState('progress');
   const [playerTag, setPlayerTag] = useState(() => {
     return localStorage.getItem('coc_player_tag') || '#L9R2LJ9RG';
   });
