@@ -1,0 +1,21 @@
+{
+  "name": "CoC Companion - Village & Lab Max Tracker",
+  "short_name": "CoC Tracker",
+  "description": "Zero-upgrade 100% max countdown, live builder timer, laboratory and pet house tracker for Clash of Clans",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14171d",
+  "theme_color": "#1a202c",
+  "icons": [
+    {
+      "src": "/assets/heroes/dragon-duke.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/heroes/dragon-duke.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

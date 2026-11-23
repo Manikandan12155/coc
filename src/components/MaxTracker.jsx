@@ -63,6 +63,15 @@ export default function MaxTracker({ player }) {
   };
 
   const [activeFilter, setActiveFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShareStats = () => {
+    const textToCopy = `🏰 Chief ${player.name} (${player.tag}) | TH${player.townHallLevel} | ${stats?.overallVillagePct}% Maxed | ~${Math.round((stats?.totalBuilderDays || 4040) / Math.max(1, activeBuilders))}d Left | ${player.warStars || 0} War Stars ⭐ - Tracked with CoC Companion!`;
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   const [openSections, setOpenSections] = useState({
     quickWins: false,
@@ -399,6 +408,35 @@ export default function MaxTracker({ player }) {
         </div>
       </div>
 
+      {/* Quick Search & Flex Share Toolbar */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search buildings, heroes, defenses, traps..."
+            className="w-full bg-[#121620] border border-[#273244] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-2 text-gray-400 hover:text-white text-xs font-bold"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        <button
+          onClick={handleShareStats}
+          className="px-3 py-1.5 bg-[#18202d] hover:bg-[#20293a] border border-[#273244] rounded-xl text-xs font-semibold text-amber-300 flex items-center gap-1.5 whitespace-nowrap shadow-sm transition"
+          title="Copy Village Summary to clipboard"
+        >
+          <span>{copied ? '✓ Copied!' : '📤 Share'}</span>
+        </button>
+      </div>
+
       {/* Filter Pills Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1">
         {filterButtons.map((btn) => {
@@ -584,8 +622,25 @@ export default function MaxTracker({ player }) {
         </div>
       )}
 
+      {/* Search Filtered Override */}
+      {searchQuery && (
+        <div className="space-y-2">
+          <div className="text-[11px] font-semibold text-gray-400 px-1">
+            Found items matching: <strong className="text-amber-300">"{searchQuery}"</strong>
+          </div>
+          {[...allVillageItems, ...COC_ASSETS.defenses, ...COC_ASSETS.traps, ...COC_ASSETS.buildings, ...COC_ASSETS.economy]
+            .filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map(item => {
+              if (item.level !== undefined) {
+                return renderItemCard(item.name, item.level, item.maxLevel, item.category, item.avgDays);
+              }
+              return renderGenericStaticCard(item);
+            })}
+        </div>
+      )}
+
       {/* Filtered Flat Grid List */}
-      {activeFilter !== 'all' && (
+      {!searchQuery && activeFilter !== 'all' && (
         <div className="space-y-2">
           {activeFilter === 'quickwins' && quickWins.map(item => renderItemCard(item.name, item.level, item.maxLevel, item.category, item.avgDays))}
           {activeFilter === 'heroes' && mainHeroes.map(h => renderItemCard(h.name, h.level, h.maxLevel, 'heroes', 8))}

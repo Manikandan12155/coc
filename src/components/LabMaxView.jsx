@@ -57,6 +57,7 @@ export default function LabMaxView({ player }) {
   };
 
   const [activeFilter, setActiveFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (!player) return null;
 
@@ -210,6 +211,9 @@ export default function LabMaxView({ player }) {
   };
 
   const filteredItems = allLabItems.filter(item => {
+    if (searchQuery) {
+      return item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    }
     if (activeFilter === 'all') return true;
     if (activeFilter === 'quickwins') {
       const diff = item.maxLevel - item.level;
@@ -281,6 +285,26 @@ export default function LabMaxView({ player }) {
         </div>
 
         {renderCountdownBoxes(labUnits, labWorking)}
+      </div>
+
+      {/* Quick Search Toolbar */}
+      <div className="relative">
+        <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search troops, spells, siege machines..."
+          className="w-full bg-[#121620] border border-[#273244] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-400"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-2.5 top-2 text-gray-400 hover:text-white text-xs font-bold"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Filter Pills Bar */}
