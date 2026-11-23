@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
-import { 
-  Sparkles, Droplet, CheckCircle2, Zap, Clock, Calendar
-} from 'lucide-react';
+import { Sparkles, Droplet, CheckCircle2, Zap, Calendar } from 'lucide-react';
 
 export default function LabMaxView({ player }) {
   const stats = calculateMaxStats(player);
-  
+
   const [labWorking, setLabWorking] = useState(() => {
     return localStorage.getItem('coc_lab_working') !== 'false';
   });
-  const [petWorking, setPetWorking] = useState(() => {
-    return localStorage.getItem('coc_pet_working') !== 'false';
-  });
   const [now, setNow] = useState(Date.now());
-
   const [labTargetMs, setLabTargetMs] = useState(() => Date.now() + (stats?.labDays || 2310) * 86400000);
-  const [petTargetMs, setPetTargetMs] = useState(() => Date.now() + (stats?.petDays || 698) * 86400000);
 
   useEffect(() => {
     setLabTargetMs(Date.now() + (stats?.labDays || 2310) * 86400000);
-    setPetTargetMs(Date.now() + (stats?.petDays || 698) * 86400000);
-  }, [stats?.labDays, stats?.petDays]);
+  }, [stats?.labDays]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -57,7 +49,6 @@ export default function LabMaxView({ player }) {
   };
 
   const labUnits = getCountdownUnits(labTargetMs, labWorking);
-  const petUnits = getCountdownUnits(petTargetMs, petWorking);
 
   const calculateTargetDate = (daysRemaining) => {
     if (daysRemaining <= 0) return 'MAXED';
@@ -81,11 +72,9 @@ export default function LabMaxView({ player }) {
   const darkTroops = homeTroops.filter(t => darkTroopNames.includes(t.name));
   const elixirTroops = homeTroops.filter(t => !darkTroopNames.includes(t.name) && !siegeNames.includes(t.name) && !petNames.includes(t.name) && !t.name.startsWith('Super'));
   const sieges = homeTroops.filter(t => siegeNames.includes(t.name));
-  const pets = homeTroops.filter(t => petNames.includes(t.name));
   const spells = (player.spells || []).filter(s => s.village === 'home');
 
   const allLabItems = [
-    ...pets.map(p => ({ ...p, type: 'Pet', category: 'pets', avgDays: 7.5 })),
     ...darkTroops.map(t => ({ ...t, type: 'Dark Troop', category: 'dark', avgDays: 14 })),
     ...elixirTroops.map(t => ({ ...t, type: 'Elixir Troop', category: 'elixir', avgDays: 12 })),
     ...sieges.map(s => ({ ...s, type: 'Siege Machine', category: 'sieges', avgDays: 12 })),
@@ -100,9 +89,8 @@ export default function LabMaxView({ player }) {
   const maxedItems = allLabItems.filter(item => item.level >= item.maxLevel);
 
   const filterButtons = [
-    { id: 'all', label: 'All Lab & Pets', icon: Sparkles },
+    { id: 'all', label: 'All Lab', icon: Sparkles },
     { id: 'quickwins', label: `⚡ Quick Wins (${quickWins.length})`, icon: Zap, color: 'text-yellow-400' },
-    { id: 'pets', label: `🐾 Pets (${pets.length})`, icon: Sparkles, color: 'text-emerald-400' },
     { id: 'dark', label: `Dark Troops (${darkTroops.length})`, icon: Droplet, color: 'text-purple-400' },
     { id: 'elixir', label: `Elixir Troops (${elixirTroops.length})`, icon: Sparkles, color: 'text-pink-400' },
     { id: 'sieges', label: `Siege Machines (${sieges.length})`, icon: Zap, color: 'text-amber-400' },
@@ -110,10 +98,9 @@ export default function LabMaxView({ player }) {
     { id: 'maxed', label: `🏆 Maxed (${maxedItems.length})`, icon: CheckCircle2, color: 'text-emerald-400' },
   ];
 
-  const renderCountdownBoxes = (units, isWorking, accent = 'purple') => {
-    const isPurple = accent === 'purple';
-    const numColor = !isWorking ? 'text-gray-400' : isPurple ? 'text-purple-300' : 'text-emerald-300';
-    const secColor = !isWorking ? 'text-gray-500' : isPurple ? 'text-fuchsia-400' : 'text-emerald-400';
+  const renderCountdownBoxes = (units, isWorking) => {
+    const numColor = !isWorking ? 'text-gray-400' : 'text-purple-300';
+    const secColor = !isWorking ? 'text-gray-500' : 'text-fuchsia-400';
 
     return (
       <div className="grid grid-cols-6 gap-1 text-center font-mono mt-2">
@@ -137,7 +124,7 @@ export default function LabMaxView({ player }) {
           <div className={`text-base font-black ${numColor}`}>{units.mins}</div>
           <div className="text-[9px] text-gray-400 font-sans uppercase">MINS</div>
         </div>
-        <div className={`bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5 ${isWorking ? (isPurple ? 'border-purple-500/30' : 'border-emerald-500/30') : ''}`}>
+        <div className={`bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5 ${isWorking ? 'border-purple-500/30' : ''}`}>
           <div className={`text-base font-black ${secColor}`}>
             {units.secs < 10 ? '0' + units.secs : units.secs}
           </div>
@@ -154,7 +141,7 @@ export default function LabMaxView({ player }) {
     const estDays = remaining * avgDays;
     const etaDate = calculateTargetDate(estDays);
 
-    let imgUrl = COC_ASSETS.pets?.[name] || COC_ASSETS.troops?.[name] || COC_ASSETS.spells?.[name];
+    let imgUrl = COC_ASSETS.troops?.[name] || COC_ASSETS.spells?.[name];
 
     return (
       <div
@@ -176,7 +163,7 @@ export default function LabMaxView({ player }) {
             />
           ) : null}
           <div 
-            className="fallback-badge w-full h-full flex items-center justify-center text-amber-400 font-bold text-xs bg-slate-800 rounded" 
+            className="fallback-badge w-full h-full flex items-center justify-center text-purple-400 font-bold text-xs bg-slate-800 rounded" 
             style={{ display: imgUrl ? 'none' : 'flex' }}
           >
             ⚗️
@@ -188,7 +175,7 @@ export default function LabMaxView({ player }) {
             <span className="font-semibold text-slate-100 tracking-wide truncate">{name}</span>
             <div className="flex items-center gap-1.5 font-mono text-xs">
               <span className="text-gray-400">Lvl</span>
-              <span className={`font-bold ${isMax ? 'text-emerald-400' : 'text-amber-300'}`}>
+              <span className={`font-bold ${isMax ? 'text-emerald-400' : 'text-purple-300'}`}>
                 {level}/{maxLevel}
               </span>
               {isMax ? (
@@ -204,7 +191,7 @@ export default function LabMaxView({ player }) {
           <div className="w-full bg-[#111622] rounded-full h-1.5 overflow-hidden border border-white/5 mb-1.5">
             <div
               className={`h-full transition-all duration-500 ${
-                isMax ? 'bg-emerald-400' : 'bg-gradient-to-r from-purple-500 to-amber-400'
+                isMax ? 'bg-emerald-400' : 'bg-gradient-to-r from-purple-500 to-indigo-400'
               }`}
               style={{ width: `${Math.min(100, Math.max(5, pct))}%` }}
             />
@@ -228,7 +215,6 @@ export default function LabMaxView({ player }) {
       const diff = item.maxLevel - item.level;
       return diff > 0 && diff <= 2;
     }
-    if (activeFilter === 'pets') return item.category === 'pets';
     if (activeFilter === 'dark') return item.category === 'dark';
     if (activeFilter === 'elixir') return item.category === 'elixir';
     if (activeFilter === 'sieges') return item.category === 'sieges';
@@ -240,7 +226,7 @@ export default function LabMaxView({ player }) {
   return (
     <div className="flex-1 overflow-y-auto custom-scroll px-3 sm:px-4 py-4 pb-28 max-w-2xl mx-auto w-full space-y-4 font-normal">
       
-      {/* 1. LABORATORY LIVE COUNTDOWN */}
+      {/* LABORATORY LIVE COUNTDOWN */}
       <div className="p-3.5 bg-[#131526] rounded-xl border border-purple-500/40 shadow-inner">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
           <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -294,64 +280,7 @@ export default function LabMaxView({ player }) {
           <span className="font-mono text-gray-400">~{stats?.labDays || 0}d ({stats?.labRemainingLevels || 0} Upgrades Left)</span>
         </div>
 
-        {renderCountdownBoxes(labUnits, labWorking, 'purple')}
-      </div>
-
-      {/* 2. PET HOUSE LIVE COUNTDOWN */}
-      <div className="p-3.5 bg-[#101b22] rounded-xl border border-emerald-500/40 shadow-inner">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
-          <span className="text-[10px] text-emerald-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${petWorking ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
-            <span>{petWorking ? 'PET HOUSE: LIVE COMPANION COUNTDOWN' : 'PET HOUSE PAUSED (PETS IDLE)'}</span>
-          </span>
-          <span className={`text-[10px] px-2 py-0.5 rounded font-mono border ${
-            petWorking ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30' : 'bg-red-950/80 text-red-400 border-red-500/30'
-          }`}>
-            {petWorking ? '🐾 UPGRADING' : '⏸ PETS IDLE'}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between bg-[#14232c] p-2 rounded-lg mb-2 border border-white/5 text-xs">
-          <div className="flex items-center gap-1.5">
-            <span className="text-sm">🐾</span>
-            <span className="text-[11px] font-semibold text-gray-300">Pet House Status:</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                setPetWorking(true);
-                localStorage.setItem('coc_pet_working', 'true');
-              }}
-              className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
-                petWorking 
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' 
-                  : 'bg-[#20293a] text-gray-400 hover:text-white'
-              }`}
-            >
-              ⚡ Working
-            </button>
-            <button
-              onClick={() => {
-                setPetWorking(false);
-                localStorage.setItem('coc_pet_working', 'false');
-              }}
-              className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
-                !petWorking 
-                  ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
-                  : 'bg-[#20293a] text-gray-400 hover:text-red-400'
-              }`}
-            >
-              ⏸ Idle
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
-          <span className="font-semibold text-emerald-300">Target: {calculateTargetDate(stats?.petDays || 0)}</span>
-          <span className="font-mono text-gray-400">~{stats?.petDays || 0}d ({stats?.petRemainingLevels || 0} Pet Levels Left)</span>
-        </div>
-
-        {renderCountdownBoxes(petUnits, petWorking, 'emerald')}
+        {renderCountdownBoxes(labUnits, labWorking)}
       </div>
 
       {/* Filter Pills Bar */}
@@ -383,4 +312,3 @@ export default function LabMaxView({ player }) {
     </div>
   );
 }
-

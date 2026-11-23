@@ -3,6 +3,7 @@ import Navigation from './components/Navigation';
 import ChatView from './components/ChatView';
 import MaxTracker from './components/MaxTracker';
 import LabMaxView from './components/LabMaxView';
+import PetsMaxView from './components/PetsMaxView';
 import WarClanView from './components/WarClanView';
 import EventsView from './components/EventsView';
 import { fetchCoCPlayerData, fetchClanData } from './services/cocApi';
@@ -149,6 +150,7 @@ export default function App() {
       <main className="flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {activeTab === 'progress' && <MaxTracker player={player} />}
         {activeTab === 'lab' && <LabMaxView player={player} />}
+        {activeTab === 'pets' && <PetsMaxView player={player} />}
         {activeTab === 'clan' && <WarClanView player={player} clan={clan} onAskAI={handleAskAI} />}
         {activeTab === 'events' && <EventsView onAskAI={handleAskAI} />}
       </main>
