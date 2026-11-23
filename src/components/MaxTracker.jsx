@@ -196,13 +196,13 @@ export default function MaxTracker({ player, onAskAI }) {
             <div>
               <div className="text-[10px] text-gray-400 uppercase font-semibold">100% COMPLETE MAX PROJECTED DATE</div>
               <div className="text-sm font-bold text-amber-300 font-mono">
-                {calculateTargetDate(stats?.estDaysWithSixBuilders || 0)}
+                {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithSixBuilders || 0} Days Remaining</div>
-            <div className="text-[10px] text-gray-400">With 6 Active Builders (Zero Upgrades Left)</div>
+            <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithFiveBuilders || 0} Days Remaining</div>
+            <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
           </div>
         </div>
 

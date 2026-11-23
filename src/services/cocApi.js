@@ -101,7 +101,7 @@ export function calculateMaxStats(player) {
   const totalBuilderDays = heroDays + defenseDays;
 
   // With 6 Builders working simultaneously 24/7 (5 Home Village + 1 B.O.B 6th Builder):
-  const estDaysWithSixBuilders = Math.round(totalBuilderDays / 6);
+  const estDaysWithFiveBuilders = Math.round(totalBuilderDays / 5);
 
   // 5. OVERALL VILLAGE COMPLETION PERCENTAGE (True 100% Max Progress)
   const totalVillageEntities = totalHeroLevels + totalTroopLevels + 350; // 350 includes all defense tiers & walls
@@ -126,7 +126,7 @@ export function calculateMaxStats(player) {
     estGoldNeeded,
     estElixirNeeded,
     totalBuilderDays,
-    estDaysWithSixBuilders, // Real-time remaining days until ZERO upgrades left
+    estDaysWithFiveBuilders, // Real-time remaining days with 5 active builders (1 free for walls/exception)
     labDays,
     heroes
   };
