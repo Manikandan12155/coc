@@ -25,7 +25,6 @@ export default function MaxTracker({ player, onAskAI }) {
   const countdownMonths = Math.floor((diffMs % (365.25 * 86400000)) / (30.44 * 86400000));
   const countdownDays = Math.floor((diffMs % (30.44 * 86400000)) / 86400000);
   const countdownHours = Math.floor((diffMs % 86400000) / 3600000);
-  const stats = calculateMaxStats(player);
 
   const [activeFilter, setActiveFilter] = useState('all');
 
