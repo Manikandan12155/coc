@@ -118,7 +118,7 @@ export default function MaxTracker({ player, onAskAI }) {
       >
         <div className="w-12 h-12 rounded-xl bg-[#202937] p-1 border border-white/10 shrink-0 flex items-center justify-center overflow-hidden">
           {imgUrl ? (
-            <img src={imgUrl} alt={name} className="w-full h-full object-contain" />
+            <img src={imgUrl} alt={name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
           ) : (
             <span className="text-xl">⚔️</span>
           )}
@@ -337,7 +337,7 @@ export default function MaxTracker({ player, onAskAI }) {
                     className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
                   >
                     <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
-                      <img src={def.img} alt={def.name} className="w-full h-full object-contain" />
+                      <img src={def.img} alt={def.name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center text-xs">
@@ -386,7 +386,7 @@ export default function MaxTracker({ player, onAskAI }) {
                   className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
-                    <img src={trap.img} alt={trap.name} className="w-full h-full object-contain" />
+                    <img src={trap.img} alt={trap.name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center text-xs">
@@ -434,7 +434,7 @@ export default function MaxTracker({ player, onAskAI }) {
                   className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
-                    <img src={b.img} alt={b.name} className="w-full h-full object-contain" />
+                    <img src={b.img} alt={b.name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center text-xs">
@@ -482,7 +482,7 @@ export default function MaxTracker({ player, onAskAI }) {
                   className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
-                    <img src={eco.img} alt={eco.name} className="w-full h-full object-contain" />
+                    <img src={eco.img} alt={eco.name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center text-xs">
