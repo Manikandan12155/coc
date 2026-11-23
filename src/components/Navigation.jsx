@@ -1,13 +1,13 @@
 import React from 'react';
-import { Shield, Sparkles, Heart, Swords, Calendar } from 'lucide-react';
+import { Shield, Sparkles, Heart, ShoppingBag, Swords } from 'lucide-react';
 
 export default function Navigation({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'progress', label: 'Village', icon: Shield },
     { id: 'lab', label: 'Laboratory', icon: Sparkles },
     { id: 'pets', label: 'Hero Pets', icon: Heart },
-    { id: 'clan', label: 'Clan & War', icon: Swords },
-    { id: 'events', label: 'Events', icon: Calendar },
+    { id: 'shop', label: 'Shop & Medals', icon: ShoppingBag },
+    { id: 'war', label: 'War & Events', icon: Swords },
   ];
 
   return (
