@@ -1,4 +1,4 @@
-// Official Supercell 3D In-Game Renders & Avatars Mapping
+// Official Supercell 3D In-Game Renders & Avatars Mapping (Complete A-Z Buildings, Defenses, Traps, Army, Economy)
 export const COC_ASSETS = {
   heroes: {
     "Barbarian King": "https://raw.githubusercontent.com/Proyolo-ks1/Coc-Bot-Public-Assets/main/images/troops/Heroes/Avatar_Hero_Barbarian_King.webp",
@@ -28,7 +28,6 @@ export const COC_ASSETS = {
     "Dragon Rider": "https://static.wikia.nocookie.net/clashofclans/images/8/87/Dragon_Rider_info.png/revision/latest",
     "Electro Titan": "https://static.wikia.nocookie.net/clashofclans/images/1/1b/Electro_Titan_info.png/revision/latest",
     "Root Rider": "https://static.wikia.nocookie.net/clashofclans/images/7/7b/Root_Rider_info.png/revision/latest",
-    // Dark Troops
     "Minion": "https://static.wikia.nocookie.net/clashofclans/images/a/a4/Minion_info.png/revision/latest",
     "Hog Rider": "https://static.wikia.nocookie.net/clashofclans/images/5/54/Hog_Rider_info.png/revision/latest",
     "Valkyrie": "https://static.wikia.nocookie.net/clashofclans/images/7/7d/Valkyrie_info.png/revision/latest",
@@ -57,13 +56,55 @@ export const COC_ASSETS = {
     "Bat Spell": "https://static.wikia.nocookie.net/clashofclans/images/2/20/Bat_Spell_info.png/revision/latest",
     "Overgrowth Spell": "https://static.wikia.nocookie.net/clashofclans/images/a/a6/Overgrowth_Spell_info.png/revision/latest",
   },
+  // Complete A-Z Defenses & Merged Structures
   defenses: [
-    { name: "Monolith", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9a/Monolith1.png/revision/latest", costType: "dark", priority: 1, desc: "Tanks killer - shoots % based damage", avgDaysPerLvl: 18 },
-    { name: "Eagle Artillery", maxLvl: 7, img: "https://static.wikia.nocookie.net/clashofclans/images/7/78/Eagle_Artillery5.png/revision/latest", costType: "gold", priority: 1, desc: "High map damage, triggers after 200 troop capacity", avgDaysPerLvl: 19 },
-    { name: "Ricochet Cannon", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9e/Ricochet_Cannon2.png/revision/latest", costType: "gold", priority: 2, desc: "Merged double cannon bouncing projectile", avgDaysPerLvl: 16 },
-    { name: "Multi-Archer Tower", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/2/29/Multi-Archer_Tower2.png/revision/latest", costType: "gold", priority: 2, desc: "Merged archer tower hitting 3 targets simultaneously", avgDaysPerLvl: 16 },
-    { name: "Scattershot", maxLvl: 5, img: "https://static.wikia.nocookie.net/clashofclans/images/3/38/Scattershot4.png/revision/latest", costType: "gold", priority: 3, desc: "Cone splash damage wrecks grouped troops", avgDaysPerLvl: 17 },
-    { name: "Air Defense", maxLvl: 14, img: "https://static.wikia.nocookie.net/clashofclans/images/d/d9/Air_Defense13.png/revision/latest", costType: "gold", priority: 3, desc: "Protects against Dragons, E-Drags & Blimps", avgDaysPerLvl: 15 },
+    { name: "Monolith", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9a/Monolith1.png/revision/latest", category: "Core", priority: 1, desc: "Tanks killer - shoots % based damage", avgDaysPerLvl: 18 },
+    { name: "Eagle Artillery", maxLvl: 7, img: "https://static.wikia.nocookie.net/clashofclans/images/7/78/Eagle_Artillery5.png/revision/latest", category: "Core", priority: 1, desc: "High map damage, triggers after 200 troop capacity", avgDaysPerLvl: 19 },
+    { name: "Ricochet Cannon", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9e/Ricochet_Cannon2.png/revision/latest", category: "Merged", priority: 2, desc: "Merged double cannon bouncing projectile", avgDaysPerLvl: 16 },
+    { name: "Multi-Archer Tower", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/2/29/Multi-Archer_Tower2.png/revision/latest", category: "Merged", priority: 2, desc: "Merged archer tower hitting 3 targets simultaneously", avgDaysPerLvl: 16 },
+    { name: "Scattershot", maxLvl: 5, img: "https://static.wikia.nocookie.net/clashofclans/images/3/38/Scattershot4.png/revision/latest", category: "Core", priority: 2, desc: "Cone splash damage wrecks grouped troops", avgDaysPerLvl: 17 },
+    { name: "Air Defense", maxLvl: 14, img: "https://static.wikia.nocookie.net/clashofclans/images/d/d9/Air_Defense13.png/revision/latest", category: "Air", priority: 3, desc: "Protects against Dragons, E-Drags & Blimps", avgDaysPerLvl: 15 },
+    { name: "Inferno Tower", maxLvl: 11, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9a/Monolith1.png/revision/latest", category: "Core", priority: 2, desc: "Single beam melts heroes, multi cooks swarms", avgDaysPerLvl: 16 },
+    { name: "X-Bow", maxLvl: 12, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9e/Ricochet_Cannon2.png/revision/latest", category: "Heavy", priority: 3, desc: "Rapid fire ground & air defense", avgDaysPerLvl: 15 },
+    { name: "Wizard Tower", maxLvl: 16, img: "https://static.wikia.nocookie.net/clashofclans/images/a/a4/Wizard_Tower15.png/revision/latest", category: "Splash", priority: 4, desc: "Air & ground splash against bats & loons", avgDaysPerLvl: 14 },
+    { name: "Air Sweeper", maxLvl: 7, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9c/Air_Sweeper7.png/revision/latest", category: "Air", priority: 3, desc: "Blows back flying attackers with high wind blast", avgDaysPerLvl: 10 },
+    { name: "Hidden Tesla", maxLvl: 15, img: "https://static.wikia.nocookie.net/clashofclans/images/f/f1/Hidden_Tesla14.png/revision/latest", category: "Surprise", priority: 4, desc: "Pops underground, high DPS shock defense", avgDaysPerLvl: 14 },
+    { name: "Bomb Tower", maxLvl: 11, img: "https://static.wikia.nocookie.net/clashofclans/images/0/07/Bomb_Tower10.png/revision/latest", category: "Splash", priority: 4, desc: "Lobs ground bombs and detonates on destruction", avgDaysPerLvl: 13 },
+    { name: "Mortar", maxLvl: 16, img: "https://static.wikia.nocookie.net/clashofclans/images/0/04/Mortar16.png/revision/latest", category: "Splash", priority: 5, desc: "Long range shell fire (Required for Gear Up)", avgDaysPerLvl: 12 },
+    { name: "Archer Tower", maxLvl: 22, img: "https://static.wikia.nocookie.net/clashofclans/images/f/fa/Archer_Tower21.png/revision/latest", category: "Standard", priority: 5, desc: "Consistent long range single-target damage", avgDaysPerLvl: 13 },
+    { name: "Cannon", maxLvl: 22, img: "https://static.wikia.nocookie.net/clashofclans/images/8/8d/Cannon21.png/revision/latest", category: "Standard", priority: 5, desc: "Reliable point defense against tanks", avgDaysPerLvl: 12 },
+  ],
+  // Complete A-Z Traps
+  traps: [
+    { name: "Tornado Trap", maxLvl: 3, img: "https://static.wikia.nocookie.net/clashofclans/images/3/3f/Tornado_Trap_info.png/revision/latest", desc: "Whirlpool vortex pulling all nearby units", avgDaysPerLvl: 12 },
+    { name: "Seeking Air Mine", maxLvl: 5, img: "https://static.wikia.nocookie.net/clashofclans/images/e/e8/Seeking_Air_Mine_info.png/revision/latest", desc: "Single target massive damage against flying tanks", avgDaysPerLvl: 11 },
+    { name: "Giant Bomb", maxLvl: 9, img: "https://static.wikia.nocookie.net/clashofclans/images/8/89/Giant_Bomb_info.png/revision/latest", desc: "Heavy splash explosion obliterates ground clusters", avgDaysPerLvl: 10 },
+    { name: "Air Bomb", maxLvl: 11, img: "https://static.wikia.nocookie.net/clashofclans/images/e/ed/Air_Bomb_info.png/revision/latest", desc: "Splash air burst for minion & balloon swarms", avgDaysPerLvl: 9 },
+    { name: "Skeleton Trap", maxLvl: 4, img: "https://static.wikia.nocookie.net/clashofclans/images/5/58/Skeleton_Trap_info.png/revision/latest", desc: "Spawns ground or air skeletons to distract heroes", avgDaysPerLvl: 8 },
+    { name: "Spring Trap", maxLvl: 5, img: "https://static.wikia.nocookie.net/clashofclans/images/c/c2/Spring_Trap_info.png/revision/latest", desc: "Ejects groups of invaders right off the map", avgDaysPerLvl: 8 },
+    { name: "Bomb", maxLvl: 12, img: "https://static.wikia.nocookie.net/clashofclans/images/2/24/Bomb_info.png/revision/latest", desc: "Small surprise ground explosion", avgDaysPerLvl: 7 },
+  ],
+  // Complete A-Z Army & Core Village Infrastructure Buildings
+  buildings: [
+    { name: "Clan Castle", maxLvl: 12, img: "https://static.wikia.nocookie.net/clashofclans/images/0/0b/Clan_Castle12.png/revision/latest", type: "Army", priority: 1, desc: "Houses powerful Clan reinforcement troops & siege", avgDaysPerLvl: 18 },
+    { name: "Laboratory", maxLvl: 14, img: "https://static.wikia.nocookie.net/clashofclans/images/9/9b/Laboratory14.png/revision/latest", type: "Army", priority: 1, desc: "Upgrades troops, spells & siege machines", avgDaysPerLvl: 16 },
+    { name: "Blacksmith", maxLvl: 9, img: "https://static.wikia.nocookie.net/clashofclans/images/e/e8/Blacksmith9.png/revision/latest", type: "Army", priority: 1, desc: "Forges & upgrades game-changing Hero Equipment", avgDaysPerLvl: 17 },
+    { name: "Pet House", maxLvl: 9, img: "https://static.wikia.nocookie.net/clashofclans/images/6/6e/Pet_House9.png/revision/latest", type: "Army", priority: 2, desc: "Houses & upgrades powerful animal companions for Heroes", avgDaysPerLvl: 16 },
+    { name: "Siege Workshop", maxLvl: 7, img: "https://static.wikia.nocookie.net/clashofclans/images/0/0b/Clan_Castle12.png/revision/latest", type: "Army", priority: 2, desc: "Constructs Wall Wreckers, Battle Blimps & Flame Flingers", avgDaysPerLvl: 15 },
+    { name: "Spell Factory", maxLvl: 7, img: "https://static.wikia.nocookie.net/clashofclans/images/a/aa/Spell_Factory7.png/revision/latest", type: "Army", priority: 2, desc: "Brews elixir spells for tactical deployment", avgDaysPerLvl: 14 },
+    { name: "Dark Spell Factory", maxLvl: 6, img: "https://static.wikia.nocookie.net/clashofclans/images/0/06/Dark_Spell_Factory6.png/revision/latest", type: "Army", priority: 2, desc: "Brews dark elixir spells", avgDaysPerLvl: 14 },
+    { name: "Barracks", maxLvl: 17, img: "https://static.wikia.nocookie.net/clashofclans/images/4/4e/Barracks17.png/revision/latest", type: "Army", priority: 3, desc: "Trains all home village elixir troops", avgDaysPerLvl: 13 },
+    { name: "Dark Barracks", maxLvl: 11, img: "https://static.wikia.nocookie.net/clashofclans/images/b/b1/Dark_Barracks11.png/revision/latest", type: "Army", priority: 3, desc: "Trains dark elixir troops", avgDaysPerLvl: 14 },
+  ],
+  // Complete A-Z Resource & Storage Buildings
+  economy: [
+    { name: "Dark Elixir Storage", maxLvl: 11, img: "https://static.wikia.nocookie.net/clashofclans/images/e/e2/Dark_Elixir_Storage11.png/revision/latest", type: "Storage", priority: 1, desc: "Essential for upgrading high-level Heroes & Pets", avgDaysPerLvl: 15 },
+    { name: "Gold Storage", maxLvl: 17, img: "https://static.wikia.nocookie.net/clashofclans/images/7/7c/Gold_Storage17.png/revision/latest", type: "Storage", priority: 1, desc: "Stores massive gold required for defense upgrades", avgDaysPerLvl: 14 },
+    { name: "Elixir Storage", maxLvl: 17, img: "https://static.wikia.nocookie.net/clashofclans/images/9/94/Elixir_Storage17.png/revision/latest", type: "Storage", priority: 1, desc: "Stores elixir for Grand Warden, troops & walls", avgDaysPerLvl: 14 },
+    { name: "Dark Elixir Drill", maxLvl: 10, img: "https://static.wikia.nocookie.net/clashofclans/images/1/10/Dark_Elixir_Drill10.png/revision/latest", type: "Collector", priority: 3, desc: "Extracts dark elixir passively around the clock", avgDaysPerLvl: 12 },
+    { name: "Gold Mine", maxLvl: 16, img: "https://static.wikia.nocookie.net/clashofclans/images/5/58/Gold_Mine16.png/revision/latest", type: "Collector", priority: 4, desc: "Produces gold continuously", avgDaysPerLvl: 10 },
+    { name: "Elixir Collector", maxLvl: 16, img: "https://static.wikia.nocookie.net/clashofclans/images/b/b9/Elixir_Collector16.png/revision/latest", type: "Collector", priority: 4, desc: "Gathers elixir automatically", avgDaysPerLvl: 10 },
+    { name: "Walls", maxLvl: 18, img: "https://static.wikia.nocookie.net/clashofclans/images/6/6c/Wall17.png/revision/latest", type: "Walls", priority: 5, desc: "Level 1 to Max - Ultimate Gold & Elixir loot sink", avgDaysPerLvl: 0 },
   ],
   icons: {
     gold: "https://raw.githubusercontent.com/Proyolo-ks1/Coc-Bot-Public-Assets/main/images/icons/Gold.webp",

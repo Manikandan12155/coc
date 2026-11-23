@@ -3,25 +3,28 @@ import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
 import { 
   Clock, Droplet, Hammer, ChevronDown, ChevronUp, 
-  Sparkles, Shield, Crown, Wrench, AlertCircle, Calendar, CheckCircle2, Zap, Flame, Trophy
+  Sparkles, Shield, Crown, Wrench, Calendar, CheckCircle2, Zap, Flame, Building, Coins, Crosshair
 } from 'lucide-react';
 
 export default function MaxTracker({ player, onAskAI }) {
   const stats = calculateMaxStats(player);
 
-  const [activeFilter, setActiveFilter] = useState('all'); // all, quickwins, maxed, heroes, defenses, equipment, dark, elixir, builder
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const [openSections, setOpenSections] = useState({
     quickWins: true,
     heroes: true,
     defenses: true,
+    traps: false,
+    buildings: false,
+    economy: false,
     equipment: false,
     darkTroops: false,
     elixirTroops: false,
     spells: false,
     builderBase: false,
     maxed: false,
-    guides: true,
+    guides: false,
   });
 
   const toggleSection = (sec) => {
@@ -33,7 +36,7 @@ export default function MaxTracker({ player, onAskAI }) {
       <div className="flex-1 flex items-center justify-center p-6 text-center text-sm text-[#94a3b8]">
         <div className="flex flex-col items-center gap-2">
           <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-xs tracking-wider font-medium">Scouting Village Inventory...</span>
+          <span className="text-xs tracking-wider font-medium">Scouting Complete Village...</span>
         </div>
       </div>
     );
@@ -45,7 +48,6 @@ export default function MaxTracker({ player, onAskAI }) {
     return num;
   };
 
-  // Real-time Dynamic Date Calculator (Daily Auto-Recalculate)
   const calculateTargetDate = (daysRemaining) => {
     if (daysRemaining <= 0) return 'MAXED';
     const target = new Date(Date.now() + daysRemaining * 86400000);
@@ -66,7 +68,6 @@ export default function MaxTracker({ player, onAskAI }) {
   const heroEquipment = player.heroEquipment || [];
   const spells = player.spells || [];
 
-  // Group all items for Quick Wins & Maxed lists
   const allItems = [
     ...mainHeroes.map(h => ({ ...h, type: 'Hero', category: 'heroes', avgDays: 7 })),
     ...builderHeroes.map(h => ({ ...h, type: 'Builder Hero', category: 'builder', avgDays: 5 })),
@@ -83,18 +84,20 @@ export default function MaxTracker({ player, onAskAI }) {
   });
 
   const filterButtons = [
-    { id: 'all', label: 'All', icon: Sparkles },
+    { id: 'all', label: 'All (A-Z)', icon: Sparkles },
     { id: 'quickwins', label: `⚡ Quick Wins (${quickWins.length})`, icon: Zap, color: 'text-yellow-400' },
-    { id: 'maxed', label: `🏆 Maxed (${maxedItems.length})`, icon: CheckCircle2, color: 'text-emerald-400' },
     { id: 'heroes', label: 'Heroes', icon: Crown },
-    { id: 'defenses', label: 'Defenses (TH18)', icon: Shield },
+    { id: 'defenses', label: `Defenses (${COC_ASSETS.defenses.length})`, icon: Shield },
+    { id: 'traps', label: `Traps (${COC_ASSETS.traps.length})`, icon: Crosshair, color: 'text-orange-400' },
+    { id: 'buildings', label: `Army Buildings (${COC_ASSETS.buildings.length})`, icon: Building, color: 'text-blue-400' },
+    { id: 'economy', label: `Resources (${COC_ASSETS.economy.length})`, icon: Coins, color: 'text-yellow-400' },
     { id: 'equipment', label: 'Equipment & Ores', icon: Wrench },
-    { id: 'dark', label: 'Dark Elixir', icon: Droplet, color: 'text-purple-400' },
+    { id: 'dark', label: 'Dark Troops', icon: Droplet, color: 'text-purple-400' },
     { id: 'elixir', label: 'Elixir Troops', icon: Sparkles, color: 'text-pink-400' },
-    { id: 'builder', label: 'Builder Base (BOB)', icon: Hammer, color: 'text-amber-400' },
+    { id: 'builder', label: 'Builder Base', icon: Hammer, color: 'text-amber-400' },
+    { id: 'maxed', label: `🏆 Maxed (${maxedItems.length})`, icon: CheckCircle2, color: 'text-emerald-400' },
   ];
 
-  // Helper for Item Card with 3D Image & Dynamic Target Date
   const renderItemCard = (name, level, maxLevel, category, avgDays = 7) => {
     const pct = Math.round((level / maxLevel) * 100);
     const remaining = maxLevel - level;
@@ -113,7 +116,6 @@ export default function MaxTracker({ player, onAskAI }) {
         onClick={() => onAskAI(`${name} level ${level}/${maxLevel} la irukku. Idhai fast-ah max panna priority and tips solu.`)}
         className="bg-[#171e29] hover:bg-[#1f2838] p-3 rounded-xl border border-[#273244] transition cursor-pointer flex items-center gap-3 shadow-sm active:scale-[0.99]"
       >
-        {/* 3D Icon Render */}
         <div className="w-12 h-12 rounded-xl bg-[#202937] p-1 border border-white/10 shrink-0 flex items-center justify-center overflow-hidden">
           {imgUrl ? (
             <img src={imgUrl} alt={name} className="w-full h-full object-contain" />
@@ -122,7 +124,6 @@ export default function MaxTracker({ player, onAskAI }) {
           )}
         </div>
 
-        {/* Content & Dynamic Target Date */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-center mb-1 text-xs">
             <span className="font-semibold text-slate-100 tracking-wide truncate">{name}</span>
@@ -138,7 +139,6 @@ export default function MaxTracker({ player, onAskAI }) {
             </div>
           </div>
 
-          {/* Progress Bar */}
           <div className="w-full bg-[#0d1218] h-2 rounded-full overflow-hidden border border-white/5 mb-1.5">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
@@ -148,7 +148,6 @@ export default function MaxTracker({ player, onAskAI }) {
             />
           </div>
 
-          {/* Real-time Dynamic Target Date Banner */}
           <div className="flex items-center justify-between text-[10px] text-gray-400">
             <span className="flex items-center gap-1">
               <Calendar size={11} className="text-amber-400/80" />
@@ -164,7 +163,7 @@ export default function MaxTracker({ player, onAskAI }) {
   return (
     <div className="flex-1 overflow-y-auto custom-scroll px-3 sm:px-4 py-4 pb-28 max-w-2xl mx-auto w-full space-y-4 font-normal">
       
-      {/* 🏰 Top Village Executive Banner (Overall ETA Daily Recalculated) */}
+      {/* 🏰 Top Village Executive Banner */}
       <div className="coc-card p-4 relative overflow-hidden">
         <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
           <div className="flex items-center gap-3">
@@ -207,7 +206,6 @@ export default function MaxTracker({ player, onAskAI }) {
           </div>
         </div>
 
-        {/* 2 Big Resource Cards */}
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="bg-[#141a24] p-3 rounded-xl border border-[#263040] flex items-center gap-2.5">
             <img src={COC_ASSETS.icons.darkElixir} alt="Dark Elixir" className="w-7 h-7 object-contain shrink-0" />
@@ -233,7 +231,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       </div>
 
-      {/* 🏷️ Horizontal Filter Pills Bar */}
+      {/* 🏷️ Filter Pills Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1">
         {filterButtons.map((btn) => {
           const Icon = btn.icon;
@@ -255,7 +253,7 @@ export default function MaxTracker({ player, onAskAI }) {
         })}
       </div>
 
-      {/* ⚡ Section: Quick Wins (Almost Maxed: 1-2 levels remaining) */}
+      {/* ⚡ Section: Quick Wins */}
       {(activeFilter === 'all' || activeFilter === 'quickwins') && quickWins.length > 0 && (
         <div className="coc-card p-4 border-amber-500/30">
           <button
@@ -276,9 +274,6 @@ export default function MaxTracker({ player, onAskAI }) {
 
           {openSections.quickWins && (
             <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
-              <p className="text-[11px] text-gray-400 mb-2">
-                Indha items-ah 1-2 upgrades-la complete max pannidalaam. Maximum instant value kedaikkum:
-              </p>
               {quickWins.map(item => renderItemCard(item.name, item.level, item.maxLevel, item.category, item.avgDays))}
             </div>
           )}
@@ -312,7 +307,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🛡️ Section: Core Defenses (TH18) */}
+      {/* 🛡️ Section: All A-Z Defenses */}
       {(activeFilter === 'all' || activeFilter === 'defenses') && (
         <div className="coc-card p-4">
           <button
@@ -322,7 +317,7 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="flex items-center gap-2">
               <Shield size={18} className="text-emerald-400" />
               <h3 className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">
-                Town Hall 18 Core Defenses ({COC_ASSETS.defenses.length})
+                Village Defenses ({COC_ASSETS.defenses.length})
               </h3>
             </div>
             <div className="flex items-center gap-1.5 text-gray-400">
@@ -338,7 +333,7 @@ export default function MaxTracker({ player, onAskAI }) {
                 return (
                   <div
                     key={def.name}
-                    onClick={() => onAskAI(`Town Hall 18 la ${def.name} defense upgrade panna exact priority and strategy solu.`)}
+                    onClick={() => onAskAI(`${def.name} defense upgrade panna exact priority and strategy solu.`)}
                     className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
                   >
                     <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
@@ -352,7 +347,7 @@ export default function MaxTracker({ player, onAskAI }) {
                       <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{def.desc}</p>
                       <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
                         <span>Target: <strong className="text-gray-200">{calculateTargetDate(estDays)}</strong></span>
-                        <span className="text-amber-400/80 font-mono">Priority P{def.priority}</span>
+                        <span className="text-amber-400/80 font-mono">Priority P{def.priority} • {def.category}</span>
                       </div>
                     </div>
                   </div>
@@ -363,65 +358,145 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🔮 Strategic Guidance Section: Ores Mastery, Helpers Hut, Loot & Gems */}
-      {(activeFilter === 'all' || activeFilter === 'equipment') && (
-        <div className="coc-card p-4 space-y-3">
+      {/* 🎯 Section: All A-Z Traps */}
+      {(activeFilter === 'all' || activeFilter === 'traps') && (
+        <div className="coc-card p-4">
           <button
-            onClick={() => toggleSection('guides')}
+            onClick={() => toggleSection('traps')}
             className="w-full flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-2">
-              <Sparkles size={18} className="text-purple-400" />
-              <h3 className="text-xs font-semibold text-purple-300 uppercase tracking-wider">
-                🔮 Master Guides: Ores, Helpers Hut, Loot & Gems
+              <Crosshair size={18} className="text-orange-400" />
+              <h3 className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
+                Traps ({COC_ASSETS.traps.length})
               </h3>
             </div>
             <div className="flex items-center gap-1.5 text-gray-400">
               <span className="text-[10px]">Toggle</span>
-              {openSections.guides ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+              {openSections.traps ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
             </div>
           </button>
 
-          {openSections.guides && (
-            <div className="mt-3 space-y-2.5 pt-2 border-t border-white/5 text-xs">
-              
-              {/* Ores Guide */}
-              <div className="p-3 bg-[#131822] rounded-xl border border-purple-500/30 space-y-1.5">
-                <div className="font-semibold text-purple-300 flex items-center justify-between">
-                  <span>🔮 Ores Mastery (Glowy Bottleneck)</span>
-                  <span className="text-[10px] text-gray-400">Blacksmith</span>
+          {openSections.traps && (
+            <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
+              {COC_ASSETS.traps.map((trap) => (
+                <div
+                  key={trap.name}
+                  onClick={() => onAskAI(`${trap.name} trap upgrade strategy solu.`)}
+                  className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
+                    <img src={trap.img} alt={trap.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-slate-100">{trap.name}</span>
+                      <span className="text-amber-300 font-mono text-[11px]">Max Lvl {trap.maxLvl}</span>
+                    </div>
+                    <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{trap.desc}</p>
+                    <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
+                      <span>Target: <strong className="text-gray-200">{calculateTargetDate(trap.avgDaysPerLvl * 2)}</strong></span>
+                      <span className="text-gray-400 font-mono">Trap</span>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-gray-300 leading-relaxed text-[11px]">
-                  <strong>✨ Shiny:</strong> Daily Star Bonus & Wars-la continuous-ah kedaikum. <br/>
-                  <strong>🔮 Glowy Ore:</strong> The real bottleneck! Milestone levels (Lvl 3, 6, 9, 12, 15, 18, 21, 24, 27) ku save pannunga. <br/>
-                  <strong>⭐ Starry Ore:</strong> Clan Wars & CWL-la mattum dhaan kedaikum (Giant Gauntlet, Frozen Arrow ku use pannunga).
-                </p>
-                <div className="pt-1 text-[11px] text-amber-300">
-                  <strong>Must-Equip Combos:</strong> King (Giant Gauntlet + Rage) | Queen (Frozen Arrow + Invisibility) | Warden (Eternal Tome + Healing).
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 🏛️ Section: All A-Z Army & Core Buildings */}
+      {(activeFilter === 'all' || activeFilter === 'buildings') && (
+        <div className="coc-card p-4">
+          <button
+            onClick={() => toggleSection('buildings')}
+            className="w-full flex items-center justify-between text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Building size={18} className="text-blue-400" />
+              <h3 className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
+                Army & Core Buildings ({COC_ASSETS.buildings.length})
+              </h3>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-400">
+              <span className="text-[10px]">Toggle</span>
+              {openSections.buildings ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+            </div>
+          </button>
+
+          {openSections.buildings && (
+            <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
+              {COC_ASSETS.buildings.map((b) => (
+                <div
+                  key={b.name}
+                  onClick={() => onAskAI(`${b.name} building upgrade value and tips solu.`)}
+                  className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
+                    <img src={b.img} alt={b.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-slate-100">{b.name}</span>
+                      <span className="text-amber-300 font-mono text-[11px]">Max Lvl {b.maxLvl}</span>
+                    </div>
+                    <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{b.desc}</p>
+                    <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
+                      <span>Target: <strong className="text-gray-200">{calculateTargetDate(b.avgDaysPerLvl * 2)}</strong></span>
+                      <span className="text-blue-300 font-mono">P{b.priority} • {b.type}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-              {/* Helpers Hut Guide */}
-              <div className="p-3 bg-[#131822] rounded-xl border border-amber-500/30 space-y-1.5">
-                <div className="font-semibold text-amber-300 flex items-center justify-between">
-                  <span>🛖 Helpers Hut (Apprentice Builder ROI)</span>
-                  <span className="text-[10px] text-gray-400">Gem Value</span>
+      {/* 💰 Section: All A-Z Resources & Economy */}
+      {(activeFilter === 'all' || activeFilter === 'economy') && (
+        <div className="coc-card p-4">
+          <button
+            onClick={() => toggleSection('economy')}
+            className="w-full flex items-center justify-between text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Coins size={18} className="text-yellow-400" />
+              <h3 className="text-xs font-semibold text-yellow-300 uppercase tracking-wider">
+                Storages, Collectors & Walls ({COC_ASSETS.economy.length})
+              </h3>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-400">
+              <span className="text-[10px]">Toggle</span>
+              {openSections.economy ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+            </div>
+          </button>
+
+          {openSections.economy && (
+            <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
+              {COC_ASSETS.economy.map((eco) => (
+                <div
+                  key={eco.name}
+                  onClick={() => onAskAI(`${eco.name} upgrade strategy and priority solu.`)}
+                  className="bg-[#171e29] hover:bg-[#1e2736] p-3 rounded-xl border border-[#283344] transition cursor-pointer flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-[#202937] border border-white/10 p-1 flex items-center justify-center shrink-0">
+                    <img src={eco.img} alt={eco.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-slate-100">{eco.name}</span>
+                      <span className="text-amber-300 font-mono text-[11px]">Max Lvl {eco.maxLvl}</span>
+                    </div>
+                    <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{eco.desc}</p>
+                    <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
+                      <span>Target: <strong className="text-gray-200">{calculateTargetDate(eco.avgDaysPerLvl * 2)}</strong></span>
+                      <span className="text-amber-300 font-mono">P{eco.priority} • {eco.type}</span>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-gray-300 leading-relaxed text-[11px]">
-                  <strong>Where to assign:</strong> Longest upgrades-la mattum podanum (Town Hall, Monolith, Eagle, High-tier Heroes). Short upgrades-la pota time waste! <br/>
-                  <strong>Gems Upgrade Worth-ah?:</strong> Level 1 to 3 (500 to 1,500 gems) = 100% MAXIMUM VALUE! Year-ku 45 to 90 builder days free-ah save aagum.
-                </p>
-              </div>
-
-              {/* Fast Loot & Gem Strategy */}
-              <div className="p-3 bg-[#131822] rounded-xl border border-emerald-500/30 space-y-1.5">
-                <div className="font-semibold text-emerald-300">💰 Fast Loot & Gem Rules</div>
-                <p className="text-gray-300 leading-relaxed text-[11px]">
-                  <strong>Loot Comp:</strong> Sneaky Goblins + Super Wall Breakers + Jump/Invisibility spells (Masters II / Champions III). In & out 2 mins per 1.5M loot! <br/>
-                  <strong>Gem Spending Hierarchy:</strong> 5th Builder &gt; Book of Heroes in Trader (500 gems) &gt; NEVER spend gems on instant resource filling.
-                </p>
-              </div>
-
+              ))}
             </div>
           )}
         </div>
@@ -562,9 +637,6 @@ export default function MaxTracker({ player, onAskAI }) {
 
           {openSections.maxed && (
             <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
-              <p className="text-[11px] text-gray-400 mb-2">
-                Indha items-ah neenga already 100% max panniteenga. Ini idhula gold, elixir or builder spend panna theva illa:
-              </p>
               {maxedItems.map(item => renderItemCard(item.name, item.level, item.maxLevel, item.category, 0))}
             </div>
           )}
