@@ -258,6 +258,67 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
           </div>
         </div>
+        {/* Dedicated Laboratory & Pet House Timeline Cards */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* Laboratory Max Card */}
+          <div className="p-3 bg-[#131826] rounded-xl border border-purple-500/30 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold text-purple-300 flex items-center gap-1.5">
+                <span>⚗️</span>
+                <span>LABORATORY MAX</span>
+              </span>
+              <span className="text-[10px] bg-purple-950/80 text-purple-300 px-1.5 py-0.5 rounded font-mono">
+                1 Slot
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between">
+              <div>
+                <div className="text-base font-extrabold text-purple-200 font-mono">
+                  ~{stats?.labDays || 0}d
+                </div>
+                <div className="text-[10px] text-gray-400 font-medium">
+                  {stats?.labRemainingLevels || 0} Upgrades Left
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] text-purple-400 font-mono">
+                  {calculateTargetDate(stats?.labDays || 0)}
+                </div>
+                <div className="text-[9px] text-gray-500">Troops/Spells/Sieges</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pet House Max Card */}
+          <div className="p-3 bg-[#131826] rounded-xl border border-emerald-500/30 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5">
+                <span>🐾</span>
+                <span>PET HOUSE MAX</span>
+              </span>
+              <span className="text-[10px] bg-emerald-950/80 text-emerald-300 px-1.5 py-0.5 rounded font-mono">
+                1 Slot
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between">
+              <div>
+                <div className="text-base font-extrabold text-emerald-200 font-mono">
+                  ~{stats?.petDays || 0}d
+                </div>
+                <div className="text-[10px] text-gray-400 font-medium">
+                  {stats?.petRemainingLevels || 0} Pet Levels Left
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] text-emerald-400 font-mono">
+                  {calculateTargetDate(stats?.petDays || 0)}
+                </div>
+                <div className="text-[9px] text-gray-500">10 Hero Pets</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* â ³ LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
         <div className="mt-3 p-3 bg-[#111622] rounded-xl border border-amber-500/30 shadow-inner">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-white/5">
