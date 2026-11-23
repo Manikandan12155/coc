@@ -12,6 +12,12 @@ export default function MaxTracker({ player, onAskAI }) {
   const [activeBuilders, setActiveBuilders] = useState(() => {
     return parseInt(localStorage.getItem('coc_active_builders') || '5', 10);
   });
+  const [labWorking, setLabWorking] = useState(() => {
+    return localStorage.getItem('coc_lab_working') !== 'false';
+  });
+  const [petWorking, setPetWorking] = useState(() => {
+    return localStorage.getItem('coc_pet_working') !== 'false';
+  });
   const [now, setNow] = useState(Date.now());
   const [targetTimeMs, setTargetTimeMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
 
@@ -258,33 +264,67 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
           </div>
         </div>
-        {/* Dedicated Laboratory & Pet House Timeline Cards */}
-        <div className="grid grid-cols-2 gap-2 mb-3">
+        {/* Dedicated Laboratory & Pet House Timeline Cards with Exact Working/Idle Controllers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
           {/* Laboratory Max Card */}
           <div className="p-3 bg-[#131826] rounded-xl border border-purple-500/30 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-bold text-purple-300 flex items-center gap-1.5">
-                <span>⚗️</span>
-                <span>LABORATORY MAX</span>
+                <span className={`w-2 h-2 rounded-full ${labWorking ? 'bg-purple-400 animate-pulse' : 'bg-red-500'}`}></span>
+                <span>⚗️ LABORATORY</span>
               </span>
-              <span className="text-[10px] bg-purple-950/80 text-purple-300 px-1.5 py-0.5 rounded font-mono">
-                1 Slot
+              <span className="text-[10px] bg-purple-950/80 text-purple-300 px-1.5 py-0.5 rounded font-mono border border-purple-500/30">
+                {labWorking ? 'RESEARCHING' : 'LAB IDLE'}
               </span>
             </div>
-            <div className="flex items-baseline justify-between">
+            
+            <div className="flex items-baseline justify-between my-1">
               <div>
-                <div className="text-base font-extrabold text-purple-200 font-mono">
+                <div className="text-lg font-black text-purple-200 font-mono">
                   ~{stats?.labDays || 0}d
                 </div>
                 <div className="text-[10px] text-gray-400 font-medium">
-                  {stats?.labRemainingLevels || 0} Upgrades Left
+                  {stats?.labRemainingLevels || 0} Upgrades Left (Troops/Spells/Sieges)
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[10px] text-purple-400 font-mono">
+                <div className="text-xs font-bold text-purple-400 font-mono">
                   {calculateTargetDate(stats?.labDays || 0)}
                 </div>
-                <div className="text-[9px] text-gray-500">Troops/Spells/Sieges</div>
+                <div className="text-[9px] text-gray-500">Projected Max</div>
+              </div>
+            </div>
+
+            {/* Lab Status Toggle */}
+            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-1 text-xs">
+              <span className="text-[10px] text-gray-400 font-medium">Lab Status:</span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setLabWorking(true);
+                    localStorage.setItem('coc_lab_working', 'true');
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                    labWorking 
+                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30' 
+                      : 'bg-[#20293a] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  ⚡ Working
+                </button>
+                <button
+                  onClick={() => {
+                    setLabWorking(false);
+                    localStorage.setItem('coc_lab_working', 'false');
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                    !labWorking 
+                      ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
+                      : 'bg-[#20293a] text-gray-400 hover:text-red-400'
+                  }`}
+                >
+                  ⏸ Idle
+                </button>
               </div>
             </div>
           </div>
@@ -293,27 +333,61 @@ export default function MaxTracker({ player, onAskAI }) {
           <div className="p-3 bg-[#131826] rounded-xl border border-emerald-500/30 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5">
-                <span>🐾</span>
-                <span>PET HOUSE MAX</span>
+                <span className={`w-2 h-2 rounded-full ${petWorking ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
+                <span>🐾 PET HOUSE</span>
               </span>
-              <span className="text-[10px] bg-emerald-950/80 text-emerald-300 px-1.5 py-0.5 rounded font-mono">
-                1 Slot
+              <span className="text-[10px] bg-emerald-950/80 text-emerald-300 px-1.5 py-0.5 rounded font-mono border border-emerald-500/30">
+                {petWorking ? 'UPGRADING' : 'PETS IDLE'}
               </span>
             </div>
-            <div className="flex items-baseline justify-between">
+            
+            <div className="flex items-baseline justify-between my-1">
               <div>
-                <div className="text-base font-extrabold text-emerald-200 font-mono">
+                <div className="text-lg font-black text-emerald-200 font-mono">
                   ~{stats?.petDays || 0}d
                 </div>
                 <div className="text-[10px] text-gray-400 font-medium">
-                  {stats?.petRemainingLevels || 0} Pet Levels Left
+                  {stats?.petRemainingLevels || 0} Pet Levels Left (10 Pets)
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[10px] text-emerald-400 font-mono">
+                <div className="text-xs font-bold text-emerald-400 font-mono">
                   {calculateTargetDate(stats?.petDays || 0)}
                 </div>
-                <div className="text-[9px] text-gray-500">10 Hero Pets</div>
+                <div className="text-[9px] text-gray-500">Projected Max</div>
+              </div>
+            </div>
+
+            {/* Pet House Status Toggle */}
+            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-1 text-xs">
+              <span className="text-[10px] text-gray-400 font-medium">Pet House:</span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setPetWorking(true);
+                    localStorage.setItem('coc_pet_working', 'true');
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                    petWorking 
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' 
+                      : 'bg-[#20293a] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  ⚡ Working
+                </button>
+                <button
+                  onClick={() => {
+                    setPetWorking(false);
+                    localStorage.setItem('coc_pet_working', 'false');
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                    !petWorking 
+                      ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
+                      : 'bg-[#20293a] text-gray-400 hover:text-red-400'
+                  }`}
+                >
+                  ⏸ Idle
+                </button>
               </div>
             </div>
           </div>
