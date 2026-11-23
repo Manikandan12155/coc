@@ -22,6 +22,8 @@ export default function MaxTracker({ player, onAskAI }) {
   const diffMs = Math.max(0, targetTimeMs - now);
 
   const countdownYears = Math.floor(diffMs / (365.25 * 86400000));
+  const countdownMinutes = Math.floor((diffMs % 3600000) / 60000);
+  const countdownSeconds = Math.floor((diffMs % 60000) / 1000);
   const countdownMonths = Math.floor((diffMs % (365.25 * 86400000)) / (30.44 * 86400000));
   const countdownDays = Math.floor((diffMs % (30.44 * 86400000)) / 86400000);
   const countdownHours = Math.floor((diffMs % 86400000) / 3600000);
