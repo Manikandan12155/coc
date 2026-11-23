@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
 import { 
@@ -7,6 +7,25 @@ import {
 } from 'lucide-react';
 
 export default function MaxTracker({ player, onAskAI }) {
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const totalRemainingDays = stats?.estDaysWithFiveBuilders || 0;
+  const targetTimeMs = Date.now() + totalRemainingDays * 86400000;
+  const diffMs = Math.max(0, targetTimeMs - now);
+
+  const countdownYears = Math.floor(diffMs / (365.25 * 86400000));
+  const countdownMonths = Math.floor((diffMs % (365.25 * 86400000)) / (30.44 * 86400000));
+  const countdownDays = Math.floor((diffMs % (30.44 * 86400000)) / 86400000);
+  const countdownHours = Math.floor((diffMs % 86400000) / 3600000);
+  const countdownMinutes = Math.floor((diffMs % 3600000) / 60000);
+  const countdownSeconds = Math.floor((diffMs % 60000) / 1000);
   const stats = calculateMaxStats(player);
 
   const [activeFilter, setActiveFilter] = useState('all');
@@ -203,6 +222,46 @@ export default function MaxTracker({ player, onAskAI }) {
           <div className="text-right">
             <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithFiveBuilders || 0} Days Remaining</div>
             <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
+          </div>
+        </div>
+        {/* â ³ LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
+        <div className="mt-3 p-3 bg-[#111622] rounded-xl border border-amber-500/30 shadow-inner">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>LIVE REAL-TIME COUNTDOWN TO 100% ZERO-UPGRADE MAX</span>
+            </span>
+            <span className="text-[10px] text-gray-400 font-mono">Ticking Live</span>
+          </div>
+
+          <div className="grid grid-cols-6 gap-1 text-center font-mono">
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+              <div className="text-base font-black text-amber-300">{countdownYears}</div>
+              <div className="text-[9px] text-gray-400 font-sans uppercase">YRS</div>
+            </div>
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+              <div className="text-base font-black text-amber-300">{countdownMonths}</div>
+              <div className="text-[9px] text-gray-400 font-sans uppercase">MOS</div>
+            </div>
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+              <div className="text-base font-black text-amber-300">{countdownDays}</div>
+              <div className="text-[9px] text-gray-400 font-sans uppercase">DAYS</div>
+            </div>
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+              <div className="text-base font-black text-amber-300">{countdownHours}</div>
+              <div className="text-[9px] text-gray-400 font-sans uppercase">HRS</div>
+            </div>
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+              <div className="text-base font-black text-amber-300">{countdownMinutes}</div>
+              <div className="text-[9px] text-gray-400 font-sans uppercase">MINS</div>
+            </div>
+            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5 border-emerald-500/30">
+              <div className="text-base font-black text-emerald-400">{countdownSeconds < 10 ? '0' + countdownSeconds : countdownSeconds}</div>
+              <div className="text-[9px] text-emerald-400 font-sans uppercase">SECS</div>
+            </div>
+          </div>
+        </div>
+        <div>
           </div>
         </div>
 
