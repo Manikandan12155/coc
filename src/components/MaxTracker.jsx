@@ -6,26 +6,29 @@ import {
 } from 'lucide-react';
 
 export default function MaxTracker({ player }) {
-  // User Interactive Defense Levels (Persisted per Player Tag)
+  const stats = calculateMaxStats(player);
+  const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
+
+  // User Interactive Defense Levels (Persisted per Player Tag with null safety)
   const [defenseLevels, setDefenseLevels] = useState(() => {
-    const saved = localStorage.getItem(`coc_defenses_${player.tag}`);
+    const playerTag = player?.tag || 'default';
+    const saved = localStorage.getItem(`coc_defenses_${playerTag}`);
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    // Default estimated mid-stage levels for current Town Hall
     const initial = {};
     COC_ASSETS.defenses.forEach(d => {
-      // Default to maxLvl - 1 or maxLvl - 2 based on TH
       initial[d.name] = Math.max(1, d.maxLvl - 2);
     });
     return initial;
   });
 
   const handleUpdateDefenseLevel = (defenseName, newLevel, maxLevel) => {
+    const playerTag = player?.tag || 'default';
     const clamped = Math.max(1, Math.min(maxLevel, newLevel));
     const updated = { ...defenseLevels, [defenseName]: clamped };
     setDefenseLevels(updated);
-    localStorage.setItem(`coc_defenses_${player.tag}`, JSON.stringify(updated));
+    localStorage.setItem(`coc_defenses_${playerTag}`, JSON.stringify(updated));
   };
 
   // Calculate true dynamic remaining defense builder days from user levels
@@ -37,9 +40,6 @@ export default function MaxTracker({ player }) {
   }, 0);
 
   const dynamicTotalBuilderDays = (stats?.heroDays || 2160) + calculatedDefenseDays;
-
-  const stats = calculateMaxStats(player);
-  const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
 
   const [activeBuilders, setActiveBuilders] = useState(() => {
     return parseInt(localStorage.getItem('coc_active_builders') || '5', 10);
