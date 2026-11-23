@@ -1,0 +1,129 @@
+# 🏰 Village Max Tab - Master Execution Prompt & Architecture Blueprint
+
+## 📌 Document Purpose
+Indha file-la namma Village Max tab-oda current state, architecture, and user kudukura each new idea & requirement step-by-step accumulate pannuvom. Discussion mudiyum podhu idhu oru complete single-shot execution master prompt-ah maari, flawless-ah execute panna use aagum.
+
+---
+
+## 🛠️ Current State (Baseline Snapshot)
+1. **Live CoC Data Integration:**
+   - Player Profile: Name, TH Level (TH18), Clan, Trophies, Exp.
+   - Heroes (King, Queen, Warden, RC, Minion Prince, Dragon Duke, Battle Machine, Copter).
+   - Hero Equipment (Blacksmith 25+ equipments with Ores data).
+   - Troops & Spells (Laboratory data).
+2. **Current Calculations:**
+   - Hero Max Progress %
+   - Est. Dark Elixir required for remaining hero levels.
+   - Est. Builder days required (with 3 dedicated hero builders).
+   - 6th Builder BOB Quest (Battle Machine progress).
+3. **Current UI Structure:**
+   - Horizontal Filter Pills: All, Heroes, Defenses (TH18), Equipment (Ores), Dark Elixir, Elixir Army, Builder Base.
+   - Collapsible Accordions for each category.
+   - Official 3D Avatars for all heroes (including Dragon Duke).
+   - Core Defenses (TH18 priorities: Monolith, Eagle, Spell Towers, Ricochet Cannons, Multi-Archer Towers).
+   - 1-Tap AI Coaching triggers.
+
+---
+
+## 💡 User Core Pain Points & Requirements (Logged on 23-Nov-2026)
+
+### 1. 🏆 Already Maxed Items ("Yethulam already maxed aaiduchu nu therila")
+- **Need:** Dedicated "Already Maxed" filter/section or glowing MAX badge counter.
+- **Display:** Total count of maxed items (e.g. `14 Items Maxed`) + list of fully maxed troops/spells/heroes/equipment.
+
+### 2. ⚡ Almost Maxed ("Yethalam max aagurathuku romba kitta irukku - Quick Wins")
+- **Need:** "Almost Maxed / Low Hanging Fruits" filter (Items needing only 1 or 2 levels to become 100% MAX).
+- **Benefit:** User can finish these first with 1-2 upgrades to get immediate permanent max power.
+
+### 3. ⏳ Dynamic Real-Time Target Date for EACH Individual Item (🔥 DAILY LIVE AUTO-UPDATE)
+- **Requirement:** "Each item ku target date daily um update aaganum, yellame realtime la update aaganum."
+- **Execution Math:**
+  - Inniku date + `(remaining levels * avg upgrade days)`.
+  - Daily automatic live date projection for EVERY Hero, Defense, Troop, and Equipment!
+  - Example:
+    - *Barbarian King (Lvl 56/115):* `59 levels left` ➔ `ETA: Oct 14, 2027 (~325 Days remaining)`.
+    - *Archer Queen (Lvl 64/115):* `51 levels left` ➔ `ETA: Aug 02, 2027 (~252 Days remaining)`.
+    - *Grand Warden (Lvl 38/90):* `52 levels left` ➔ `ETA: Aug 12, 2027 (~262 Days remaining)`.
+    - *Battle Machine (Lvl 28/35):* `7 levels left` ➔ `ETA: Dec 28, 2026 (~35 Days remaining - 6th Builder unlocked!)`.
+  - Date dynamically recalculates every time page is opened or refreshed!
+
+### 4. 📅 Overall Village 100% Max Date (Daily Dynamic Projected Finish Line)
+- **Need:** Top-level Hero Max ETA & Overall Village ETA with realistic builder allocation:
+  - Total Remaining Days: dynamically computed from remaining levels.
+  - Target Calendar Date: Live JS Date object formatting (e.g. `Target Completion: May 28, 2027`).
+
+### 5. 💰 Loot Strategy & 💎 Gem Strategy ("Loot eppadi fast-ah edukuradhu & Gems eppadi spend pannanum?")
+- **Need:** Dedicated 1-Tap Strategy cards inside Village Max:
+  - **Loot Strategy:** Sneaky Goblin + Super Wall Breaker farming guide with minimum trophy league (Masters II / Champions III).
+  - **Gem Spending Hierarchy:** 5th Builder purchase > Book of Heroes in Trader (500 gems) > NEVER spend gems on instant resource filling.
+
+### 6. ⚔️ War Play Guidance ("War eppadi play pannanum?")
+- **Need:** Quick War Readiness status based on current base:
+  - If 2+ Heroes are upgrading: Auto warn "Upgrade War Mode - Opt Out or Safe 2-Star Attack".
+  - Meta War Armies for TH18 (Root Rider Smash, Super Archer Blimp).
+
+### 7. 💎 Gem Mine & Obstacles Max Tracker ("Gem mine full aaiducha & Obstacles limit?")
+- **Need:** Gem & Passive Resource Economy tracker:
+  - Builder Base Gem Mine max storage reminder (Lvl 10 Gem mine: 5.4 gems/day, cap = 26 gems).
+  - Obstacles 45-limit rule (clear obstacles every 4 days for free 6-12 gems).
+
+### 8. 🧪 Laboratory Upgrade Priority ("Lab-la yethai muthalla max pannanum?")
+- **Need:** Clear Lab Meta Tier List:
+  - **Tier S (Must Max First):** Root Rider, Healers, Freeze, Rage.
+  - **Tier A:** Dragons, Balloons, Overgrowth Spell.
+  - **Tier B:** Situational troops.
+
+### 9. 🛖 Helpers Hut (Apprentice Builder) Strategy & ROI
+- **Apprentice Builder:** Permanent daily builder speedup. Longest upgrades-la mattum podanum (Town Hall, Monolith, Eagle, High-level Heroes).
+- **Gems Upgrade:** Level 1 to 3 is maximum value (saves 45-90 builder days/year).
+
+### 10. 🔮 Ores System Mastery (Shiny, Glowy, Starry Ores & Equipment Strategy)
+- **The 3 Ores:** Shiny (daily common), Glowy (bottleneck for milestone levels), Starry (Wars/CWL for Epic equipment).
+- **Must-Equip Combos:**
+  - Barbarian King: Giant Gauntlet + Rage Vial / Spiky Ball.
+  - Archer Queen: Frozen Arrow + Invisibility Vial / Healer Puppet.
+  - Grand Warden: Eternal Tome + Healing Tome.
+  - Royal Champion: Haste Vial + Rocket Spear.
+
+---
+
+## 🎯 Target UI Architecture for Village Max Tab (Master Refinement)
+
+```
+[ VILLAGE MAX TAB ]
+├── 1. Top Executive Banner:
+│      ├── Current Stage: "TH18 Mid-Stage (42% Village Complete)"
+│      ├── Target 100% Max Date: "🎯 Overall ETA: June 15, 2027 (~204 Days)" [LIVE DAILY CALC]
+│      └── Resources Needed: [Gold: 140M] [Elixir: 85M] [Dark Elixir: 24.8M]
+│
+├── 2. Smart Status Filter Bar (Horizontal):
+│      ├── 🌟 All
+│      ├── ⚡ Quick Wins (1-2 levels left to MAX)
+│      ├── 🏆 Already Maxed (Checklist of finished items)
+│      ├── 👑 Heroes (with individual Target Date)
+│      ├── 🛡️ Defenses (TH18 with upgrade ETA)
+│      ├── 🔮 Ores & Meta Equipment (Must-Keep Guide)
+│      ├── 🛖 Helpers Hut & Apprentice ROI
+│      ├── 🧪 Laboratory Meta Tiers
+│      └── 💎 Gem Economy & Mine Tracker
+│
+├── 3. Strategic Guidance Cards (Collapsible Accordions):
+│      ├── 🔮 Ores Rule: Glowy Bottleneck & Must-Equip Combos
+│      ├── 🛖 Apprentice Builder: Gem Upgrade Value vs Time Saved
+│      ├── 💰 Loot Farming Army (Sneaky Goblins Setup)
+│      └── ⚔️ TH18 War Readiness Check
+│
+└── 4. Detailed Categorized Accordions with:
+       ├── Level Progress (Current / Max)
+       ├── Remaining Levels (-X)
+       ├── 📅 Dynamic Target Date: "ETA: Oct 14, 2027 (~325d left)" [AUTO LIVE UPDATE]
+       └── 1-Tap "Ask AI Strategy"
+```
+
+---
+
+## 🚀 Execution Readiness
+- [x] Baseline documented
+- [x] All 10 user pain points, Ores breakdown & Helpers Hut documented
+- [x] Individual dynamic real-time target date math added
+- [ ] User approval to execute into codebase
