@@ -260,7 +260,6 @@ export default function MaxTracker({ player, onAskAI }) {
               <div className="text-[9px] text-emerald-400 font-sans uppercase">SECS</div>
             </div>
           </div>
-        </div>
       </div>
       </div>
       {/* ðŸ·ï¸ Filter Pills Bar */}
