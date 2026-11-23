@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
 import { 
@@ -104,7 +104,7 @@ export default function MaxTracker({ player, onAskAI }) {
 
   const filterButtons = [
     { id: 'all', label: 'All (A-Z)', icon: Sparkles },
-    { id: 'quickwins', label: `⚡ Quick Wins (${quickWins.length})`, icon: Zap, color: 'text-yellow-400' },
+    { id: 'quickwins', label: `âš¡ Quick Wins (${quickWins.length})`, icon: Zap, color: 'text-yellow-400' },
     { id: 'heroes', label: 'Heroes', icon: Crown },
     { id: 'defenses', label: `Defenses (${COC_ASSETS.defenses.length})`, icon: Shield },
     { id: 'traps', label: `Traps (${COC_ASSETS.traps.length})`, icon: Crosshair, color: 'text-orange-400' },
@@ -114,7 +114,7 @@ export default function MaxTracker({ player, onAskAI }) {
     { id: 'dark', label: 'Dark Troops', icon: Droplet, color: 'text-purple-400' },
     { id: 'elixir', label: 'Elixir Troops', icon: Sparkles, color: 'text-pink-400' },
     { id: 'builder', label: 'Builder Base', icon: Hammer, color: 'text-amber-400' },
-    { id: 'maxed', label: `🏆 Maxed (${maxedItems.length})`, icon: CheckCircle2, color: 'text-emerald-400' },
+    { id: 'maxed', label: `ðŸ† Maxed (${maxedItems.length})`, icon: CheckCircle2, color: 'text-emerald-400' },
   ];
 
   const renderItemCard = (name, level, maxLevel, category, avgDays = 7) => {
@@ -139,7 +139,7 @@ export default function MaxTracker({ player, onAskAI }) {
           {imgUrl ? (
             <img src={imgUrl} alt={name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
           ) : (
-            <span className="text-xl">⚔️</span>
+            <span className="text-xl">âš”ï¸</span>
           )}
         </div>
 
@@ -182,12 +182,12 @@ export default function MaxTracker({ player, onAskAI }) {
   return (
     <div className="flex-1 overflow-y-auto custom-scroll px-3 sm:px-4 py-4 pb-28 max-w-2xl mx-auto w-full space-y-4 font-normal">
       
-      {/* 🏰 Top Village Executive Banner */}
+      {/* ðŸ° Top Village Executive Banner */}
       <div className="coc-card p-4 relative overflow-hidden">
         <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600/30 to-yellow-400/20 p-0.5 border border-yellow-400/30 flex items-center justify-center text-xl">
-              🏰
+              ðŸ°
             </div>
             <div>
               <h2 className="text-base font-semibold text-white tracking-wide flex items-center gap-2">
@@ -197,7 +197,7 @@ export default function MaxTracker({ player, onAskAI }) {
                 </span>
               </h2>
               <p className="text-xs text-gray-400 mt-0.5 font-medium">
-                {player.clan?.name || 'No Clan'} • Lvl {player.expLevel} • 🏆 {player.trophies}
+                {player.clan?.name || 'No Clan'} â€¢ Lvl {player.expLevel} â€¢ ðŸ† {player.trophies}
               </p>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
           </div>
         </div>
-        {/* � � LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
+        {/* â ³ LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
         <div className="mt-3 p-3 bg-[#111622] rounded-xl border border-amber-500/30 shadow-inner">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -261,12 +261,9 @@ export default function MaxTracker({ player, onAskAI }) {
             </div>
           </div>
         </div>
-        <div>
-          </div>
-        </div>
-
       </div>
-      {/* 🏷️ Filter Pills Bar */}
+      </div>
+      {/* ðŸ·ï¸ Filter Pills Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1">
         {filterButtons.map((btn) => {
           const Icon = btn.icon;
@@ -288,7 +285,7 @@ export default function MaxTracker({ player, onAskAI }) {
         })}
       </div>
 
-      {/* ⚡ Section: Quick Wins */}
+      {/* âš¡ Section: Quick Wins */}
       {(activeFilter === 'all' || activeFilter === 'quickwins') && quickWins.length > 0 && (
         <div className="coc-card p-4 border-amber-500/30">
           <button
@@ -298,7 +295,7 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="flex items-center gap-2">
               <Zap size={18} className="text-yellow-400" />
               <h3 className="text-xs font-semibold text-yellow-300 uppercase tracking-wider">
-                ⚡ Quick Wins - Finish These First ({quickWins.length})
+                âš¡ Quick Wins - Finish These First ({quickWins.length})
               </h3>
             </div>
             <div className="flex items-center gap-1.5 text-gray-400">
@@ -315,7 +312,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 👑 Section: Main Heroes */}
+      {/* ðŸ‘‘ Section: Main Heroes */}
       {(activeFilter === 'all' || activeFilter === 'heroes') && (
         <div className="coc-card p-4">
           <button
@@ -342,7 +339,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🛡️ Section: All A-Z Defenses */}
+      {/* ðŸ›¡ï¸ Section: All A-Z Defenses */}
       {(activeFilter === 'all' || activeFilter === 'defenses') && (
         <div className="coc-card p-4">
           <button
@@ -382,7 +379,7 @@ export default function MaxTracker({ player, onAskAI }) {
                       <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{def.desc}</p>
                       <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
                         <span>Target: <strong className="text-gray-200">{calculateTargetDate(estDays)}</strong></span>
-                        <span className="text-amber-400/80 font-mono">Priority P{def.priority} • {def.category}</span>
+                        <span className="text-amber-400/80 font-mono">Priority P{def.priority} â€¢ {def.category}</span>
                       </div>
                     </div>
                   </div>
@@ -393,7 +390,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🎯 Section: All A-Z Traps */}
+      {/* ðŸŽ¯ Section: All A-Z Traps */}
       {(activeFilter === 'all' || activeFilter === 'traps') && (
         <div className="coc-card p-4">
           <button
@@ -441,7 +438,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🏛️ Section: All A-Z Army & Core Buildings */}
+      {/* ðŸ›ï¸ Section: All A-Z Army & Core Buildings */}
       {(activeFilter === 'all' || activeFilter === 'buildings') && (
         <div className="coc-card p-4">
           <button
@@ -479,7 +476,7 @@ export default function MaxTracker({ player, onAskAI }) {
                     <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{b.desc}</p>
                     <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
                       <span>Target: <strong className="text-gray-200">{calculateTargetDate(b.avgDaysPerLvl * 2)}</strong></span>
-                      <span className="text-blue-300 font-mono">P{b.priority} • {b.type}</span>
+                      <span className="text-blue-300 font-mono">P{b.priority} â€¢ {b.type}</span>
                     </div>
                   </div>
                 </div>
@@ -489,7 +486,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 💰 Section: All A-Z Resources & Economy */}
+      {/* ðŸ’° Section: All A-Z Resources & Economy */}
       {(activeFilter === 'all' || activeFilter === 'economy') && (
         <div className="coc-card p-4">
           <button
@@ -527,7 +524,7 @@ export default function MaxTracker({ player, onAskAI }) {
                     <p className="text-[11px] text-[#94a3b8] mt-0.5 truncate">{eco.desc}</p>
                     <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
                       <span>Target: <strong className="text-gray-200">{calculateTargetDate(eco.avgDaysPerLvl * 2)}</strong></span>
-                      <span className="text-amber-300 font-mono">P{eco.priority} • {eco.type}</span>
+                      <span className="text-amber-300 font-mono">P{eco.priority} â€¢ {eco.type}</span>
                     </div>
                   </div>
                 </div>
@@ -537,7 +534,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🧪 Section: Dark Elixir Troops */}
+      {/* ðŸ§ª Section: Dark Elixir Troops */}
       {(activeFilter === 'all' || activeFilter === 'dark') && (
         <div className="coc-card p-4">
           <button
@@ -564,7 +561,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🍷 Section: Elixir Troops */}
+      {/* ðŸ· Section: Elixir Troops */}
       {(activeFilter === 'all' || activeFilter === 'elixir') && (
         <div className="coc-card p-4">
           <button
@@ -591,7 +588,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* ⚡ Section: Spells */}
+      {/* âš¡ Section: Spells */}
       {(activeFilter === 'all' || activeFilter === 'elixir' || activeFilter === 'dark') && (
         <div className="coc-card p-4">
           <button
@@ -618,7 +615,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🔨 Section: Builder Base & BOB */}
+      {/* ðŸ”¨ Section: Builder Base & BOB */}
       {(activeFilter === 'all' || activeFilter === 'builder') && (
         <div className="coc-card p-4">
           <button
@@ -640,7 +637,7 @@ export default function MaxTracker({ player, onAskAI }) {
           {openSections.builderBase && (
             <div className="mt-3 space-y-2 pt-2 border-t border-white/5">
               <div className="p-3 bg-[#131822] rounded-xl border border-amber-500/30 text-xs mb-2">
-                <span className="font-bold text-amber-300">🔨 6th Builder Quest Target:</span> Battle Machine Level 28/35 (Innum 7 levels to unlock B.O.B!).
+                <span className="font-bold text-amber-300">ðŸ”¨ 6th Builder Quest Target:</span> Battle Machine Level 28/35 (Innum 7 levels to unlock B.O.B!).
                 <div className="text-[11px] text-gray-400 mt-1">
                   Target Unlock Date: <strong className="text-white">{calculateTargetDate(35)}</strong> (~35 days remaining)
                 </div>
@@ -651,7 +648,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 🏆 Section: Already Maxed Items */}
+      {/* ðŸ† Section: Already Maxed Items */}
       {(activeFilter === 'all' || activeFilter === 'maxed') && (
         <div className="coc-card p-4 border-emerald-500/30">
           <button
@@ -661,7 +658,7 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="flex items-center gap-2">
               <CheckCircle2 size={18} className="text-emerald-400" />
               <h3 className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">
-                🏆 Already Maxed Items ({maxedItems.length})
+                ðŸ† Already Maxed Items ({maxedItems.length})
               </h3>
             </div>
             <div className="flex items-center gap-1.5 text-gray-400">
@@ -678,7 +675,7 @@ export default function MaxTracker({ player, onAskAI }) {
         </div>
       )}
 
-      {/* 📜 Legal Disclaimer Footer */}
+      {/* ðŸ“œ Legal Disclaimer Footer */}
       <div className="text-center text-[10px] text-gray-500 pt-2 pb-6 px-4 leading-relaxed font-normal">
         This material is unofficial and is not endorsed by Supercell. For more information see Supercell's Fan Content Policy: <span className="underline">supercell.com/en/fan-content-policy/</span>.
       </div>
