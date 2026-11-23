@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/coc-api/:path*",
+      "destination": "https://cocproxy.royaleapi.dev/v1/:path*"
+    }
+  ]
+}
