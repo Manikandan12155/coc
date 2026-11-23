@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { 
   Sparkles, Newspaper, Play, Video, Calendar, Clock, BookOpen, 
-  ChevronRight, ExternalLink, Flame, Shield, ArrowLeft, Share2, Tag, CheckCircle2
+  ChevronRight, ExternalLink, Flame, Shield, ArrowLeft, Share2, Tag, CheckCircle2, Filter
 } from 'lucide-react';
 import blogsData from '../data/cocOfficialBlogs.json';
 import mediaData from '../data/cocOfficialMedia.json';
 
 export default function UpdatesView() {
   const [activeSubTab, setActiveSubTab] = useState('blogs'); // 'blogs' | 'videos' | 'shorts'
+  const [timeFilter, setTimeFilter] = useState('14'); // '14' (2 Weeks) | '30' (This Month) | 'all' (All)
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Filter videos/shorts within past 14 days (2 weeks strictly)
-  const recentMedia = (mediaData || []).filter(item => item.daysAgo <= 14);
-  const videosOnly = recentMedia.filter(item => item.type === 'video');
-  const shortsOnly = recentMedia.filter(item => item.type === 'short');
+  // Filter media based on time selection
+  const filteredByTimeMedia = (mediaData || []).filter(item => {
+    if (timeFilter === '14') return item.daysAgo <= 14;
+    if (timeFilter === '30') return item.daysAgo <= 30;
+    return true;
+  });
+
+  const videosOnly = filteredByTimeMedia.filter(item => item.type === 'video');
+  const shortsOnly = filteredByTimeMedia.filter(item => item.type === 'short');
 
   const categories = ['All', 'Major Update', 'Strategy & Guide', 'Esports & Worlds', 'Skins & Scenery'];
 
@@ -137,7 +143,7 @@ export default function UpdatesView() {
                   LIVE
                 </span>
               </h2>
-              <p className="text-[11px] text-gray-400">Authentic Supercell updates, sneak peeks & 2-week media</p>
+              <p className="text-[11px] text-gray-400">Authentic Supercell updates, sneak peeks & videos</p>
             </div>
           </div>
         </div>
@@ -153,7 +159,7 @@ export default function UpdatesView() {
             }`}
           >
             <BookOpen size={13} />
-            <span>Articles & Blogs</span>
+            <span>Articles</span>
           </button>
           <button
             onClick={() => setActiveSubTab('videos')}
@@ -179,6 +185,48 @@ export default function UpdatesView() {
           </button>
         </div>
       </div>
+
+      {/* ===================== TIME FILTER BAR (For Videos & Shorts) ===================== */}
+      {(activeSubTab === 'videos' || activeSubTab === 'shorts') && (
+        <div className="flex items-center justify-between bg-[#141923] p-2 rounded-xl border border-[#263143] text-xs">
+          <div className="flex items-center gap-1.5 text-gray-300 font-semibold text-[11px]">
+            <Clock size={13} className="text-amber-400" />
+            <span>Time Range:</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setTimeFilter('14')}
+              className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition ${
+                timeFilter === '14'
+                  ? 'bg-amber-500 text-slate-950 shadow'
+                  : 'bg-[#1a212e] text-gray-400 hover:text-white border border-[#2e394c]'
+              }`}
+            >
+              🔥 2 Weeks (Fresh)
+            </button>
+            <button
+              onClick={() => setTimeFilter('30')}
+              className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition ${
+                timeFilter === '30'
+                  ? 'bg-amber-500 text-slate-950 shadow'
+                  : 'bg-[#1a212e] text-gray-400 hover:text-white border border-[#2e394c]'
+              }`}
+            >
+              📅 30 Days (Season)
+            </button>
+            <button
+              onClick={() => setTimeFilter('all')}
+              className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition ${
+                timeFilter === 'all'
+                  ? 'bg-amber-500 text-slate-950 shadow'
+                  : 'bg-[#1a212e] text-gray-400 hover:text-white border border-[#2e394c]'
+              }`}
+            >
+              All
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ===================== TAB 1: BLOGS & ARTICLES ===================== */}
       {activeSubTab === 'blogs' && (
@@ -287,17 +335,9 @@ export default function UpdatesView() {
         </div>
       )}
 
-      {/* ===================== TAB 2: VIDEOS ONLY (Past 2 Weeks) ===================== */}
+      {/* ===================== TAB 2: VIDEOS ONLY ===================== */}
       {activeSubTab === 'videos' && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-            <span className="flex items-center gap-1 text-white font-bold">
-              <Video size={14} className="text-red-500" />
-              Official Long-form Videos (Past 14 Days)
-            </span>
-            <span className="text-[10px] font-mono text-amber-400">Strictly 2 weeks filter</span>
-          </div>
-
           {/* Active Video Player */}
           {selectedVideo && selectedVideo.type === 'video' && (
             <div className="p-3 bg-[#121620] rounded-xl border border-amber-500/40 space-y-2">
@@ -354,17 +394,9 @@ export default function UpdatesView() {
         </div>
       )}
 
-      {/* ===================== TAB 3: SHORTS ONLY (Past 2 Weeks) ===================== */}
+      {/* ===================== TAB 3: SHORTS ONLY ===================== */}
       {activeSubTab === 'shorts' && (
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-            <span className="flex items-center gap-1 text-white font-bold">
-              <Flame size={14} className="text-orange-500" />
-              Official YouTube Shorts (Past 14 Days)
-            </span>
-            <span className="text-[10px] font-mono text-amber-400">Strictly 2 weeks filter</span>
-          </div>
-
           {/* Active Short Player */}
           {selectedVideo && selectedVideo.type === 'short' && (
             <div className="p-3 bg-[#121620] rounded-xl border border-amber-500/40 space-y-2">
