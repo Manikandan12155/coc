@@ -8,6 +8,8 @@ import {
 
 export default function MaxTracker({ player, onAskAI }) {
   const stats = calculateMaxStats(player);
+  const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
+  const [targetTimeMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -17,12 +19,19 @@ export default function MaxTracker({ player, onAskAI }) {
     return () => clearInterval(timer);
   }, []);
 
-  const totalRemainingDays = stats?.estDaysWithFiveBuilders || 0;
-  const targetTimeMs = Date.now() + totalRemainingDays * 86400000;
   const diffMs = Math.max(0, targetTimeMs - now);
+  const totalSecs = Math.floor(diffMs / 1000);
 
-  const countdownYears = Math.floor(diffMs / (365.25 * 86400000));
-  const countdownMinutes = Math.floor((diffMs % 3600000) / 60000);
+  const countdownYears = Math.floor(totalSecs / (365 * 86400));
+  const remAfterYears = totalSecs % (365 * 86400);
+  const countdownMonths = Math.floor(remAfterYears / (30 * 86400));
+  const remAfterMonths = remAfterYears % (30 * 86400);
+  const countdownDays = Math.floor(remAfterMonths / 86400);
+  const remAfterDays = remAfterMonths % 86400;
+  const countdownHours = Math.floor(remAfterDays / 3600);
+  const remAfterHours = remAfterDays % 3600;
+  const countdownMinutes = Math.floor(remAfterHours / 60);
+  const countdownSeconds = remAfterHours % 60;
   const countdownSeconds = Math.floor((diffMs % 60000) / 1000);
   const countdownMonths = Math.floor((diffMs % (365.25 * 86400000)) / (30.44 * 86400000));
   const countdownDays = Math.floor((diffMs % (30.44 * 86400000)) / 86400000);
