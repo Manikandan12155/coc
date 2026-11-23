@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import ChatView from './components/ChatView';
 import MaxTracker from './components/MaxTracker';
+import LabMaxView from './components/LabMaxView';
 import WarClanView from './components/WarClanView';
 import EventsView from './components/EventsView';
 import { fetchCoCPlayerData, fetchClanData } from './services/cocApi';
@@ -146,8 +147,8 @@ export default function App() {
 
       {/* Main Screen Content */}
       <main className="flex-1 min-h-0 relative flex flex-col overflow-hidden">
-        {activeTab === 'chat' && <ChatView player={player} onAskSpecific={handleAskAI} />}
-        {activeTab === 'progress' && <MaxTracker player={player} onAskAI={handleAskAI} />}
+        {activeTab === 'progress' && <MaxTracker player={player} />}
+        {activeTab === 'lab' && <LabMaxView player={player} />}
         {activeTab === 'clan' && <WarClanView player={player} clan={clan} onAskAI={handleAskAI} />}
         {activeTab === 'events' && <EventsView onAskAI={handleAskAI} />}
       </main>

@@ -1,9 +1,10 @@
 import React from 'react';
-import { MessageSquare, Shield, Swords, Calendar } from 'lucide-react';
+import { Shield, Sparkles, Swords, Calendar } from 'lucide-react';
 
 export default function Navigation({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'progress', label: 'Village Max', icon: Shield },
+    { id: 'lab', label: 'Lab & Pets', icon: Sparkles },
     { id: 'clan', label: 'War & Clan', icon: Swords },
     { id: 'events', label: 'Events', icon: Calendar },
   ];
