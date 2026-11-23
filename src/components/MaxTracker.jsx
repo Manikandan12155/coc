@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
 import { 
