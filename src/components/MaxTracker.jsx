@@ -206,14 +206,7 @@ export default function MaxTracker({ player, onAskAI }) {
           </div>
         </div>
 
-              <div className="text-sm font-semibold text-white font-mono">
-                ~{stats?.estDaysWithThreeBuilders || 0} Days
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-
       {/* 🏷️ Filter Pills Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1">
         {filterButtons.map((btn) => {
