@@ -184,8 +184,8 @@ export default function MaxTracker({ player, onAskAI }) {
           </div>
 
           <div className="text-right">
-            <div className="text-2xl font-bold text-yellow-400 font-mono">{stats?.heroPct || 0}%</div>
-            <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Heroes Complete</div>
+            <div className="text-2xl font-bold text-yellow-400 font-mono">{stats?.overallVillagePct || 0}%</div>
+            <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">VILLAGE COMPLETE</div>
           </div>
         </div>
 
@@ -194,15 +194,15 @@ export default function MaxTracker({ player, onAskAI }) {
           <div className="flex items-center gap-2">
             <Calendar size={16} className="text-amber-400" />
             <div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold">100% Hero Max Projected Date</div>
+              <div className="text-[10px] text-gray-400 uppercase font-semibold">100% COMPLETE MAX PROJECTED DATE</div>
               <div className="text-sm font-bold text-amber-300 font-mono">
-                {calculateTargetDate(stats?.estDaysWithThreeBuilders || 0)}
+                {calculateTargetDate(stats?.estDaysWithSixBuilders || 0)}
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithThreeBuilders || 0} Days Remaining</div>
-            <div className="text-[10px] text-gray-400">With 3 Active Hero Builders</div>
+            <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithSixBuilders || 0} Days Remaining</div>
+            <div className="text-[10px] text-gray-400">With 6 Active Builders (Zero Upgrades Left)</div>
           </div>
         </div>
 
