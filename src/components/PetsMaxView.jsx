@@ -290,3 +290,4 @@ export default function PetsMaxView({ player }) {
     </div>
   );
 }
+
