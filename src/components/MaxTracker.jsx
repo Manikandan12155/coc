@@ -148,6 +148,29 @@ export default function MaxTracker({ player }) {
     );
   };
 
+
+  const HERO_META_LOADOUTS = {
+    'Barbarian King': [
+      { name: 'Giant Gauntlet', tier: 'Epic', desc: 'Immunity + Area Splash damage' },
+      { name: 'Spiky Ball', tier: 'Epic', desc: 'Destroys 5 defense buildings across map' }
+    ],
+    'Archer Queen': [
+      { name: 'Frozen Arrow', tier: 'Epic', desc: 'Slows single targets by 75%' },
+      { name: 'Invisibility Vial', tier: 'Common', desc: 'Invisibility + 880 DPS burst' }
+    ],
+    'Grand Warden': [
+      { name: 'Eternal Tome', tier: 'Common', desc: '9.5s Total Army Invulnerability' },
+      { name: 'Healing Tome', tier: 'Common', desc: 'Rapid heal over time for main smash group' }
+    ],
+    'Royal Champion': [
+      { name: 'Haste Vial', tier: 'Common', desc: 'Extreme DPS and attack speed' },
+      { name: 'Rocket Boots', tier: 'Epic', desc: 'Jumps straight into core defenses' }
+    ],
+    'Minion Prince': [
+      { name: 'Dark Orb', tier: 'Special', desc: 'Air splash curse' }
+    ]
+  };
+
   const renderItemCard = (name, level, maxLevel, category, avgDays = 7) => {
     const pct = Math.round((level / maxLevel) * 100);
     const remaining = maxLevel - level;
@@ -220,6 +243,20 @@ export default function MaxTracker({ player }) {
             </span>
             {!isMax && <span className="text-gray-500 font-mono">~{estDays}d left</span>}
           </div>
+
+          {/* Best Pro Meta Equipment Combos for Heroes */}
+          {category === 'heroes' && HERO_META_LOADOUTS[name] && (
+            <div className="mt-2 pt-1.5 border-t border-white/5 flex flex-wrap items-center gap-1 text-[10px]">
+              <span className="text-amber-400 font-bold flex items-center gap-1">
+                <Sparkles size={11} /> Meta Loadout:
+              </span>
+              {HERO_META_LOADOUTS[name].map((eq, i) => (
+                <span key={i} className="bg-[#111622] text-gray-200 px-1.5 py-0.5 rounded border border-amber-500/20 font-medium">
+                  {eq.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -314,11 +351,22 @@ export default function MaxTracker({ player }) {
               <span className="text-[11px] font-semibold text-gray-300">Active Working Builders:</span>
             </div>
             <div className="flex items-center gap-1">
+              <button
+                onClick={() => setActiveBuilders(6)}
+                className={`px-1.5 h-6 rounded text-[11px] font-bold transition-all flex items-center gap-0.5 ${
+                  activeBuilders === 6
+                    ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/30'
+                    : 'bg-[#20293a] text-amber-400/80 hover:text-amber-300'
+                }`}
+                title="6 Builders (5 Home + 1 B.O.B 6th Builder)"
+              >
+                <span>🤖 6</span>
+              </button>
               {[5, 4, 3, 2, 1].map(n => (
                 <button
                   key={n}
                   onClick={() => setActiveBuilders(n)}
-                  className={`w-6 h-6 rounded text-xs font-bold transition-all ${
+                  className={`w-5 sm:w-6 h-6 rounded text-xs font-bold transition-all ${
                     activeBuilders === n
                       ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
                       : 'bg-[#20293a] text-gray-400 hover:text-white'
@@ -330,7 +378,7 @@ export default function MaxTracker({ player }) {
               ))}
               <button
                 onClick={() => setActiveBuilders(0)}
-                className={`px-2 h-6 rounded text-[11px] font-bold transition-all ${
+                className={`px-1.5 h-6 rounded text-[11px] font-bold transition-all ${
                   activeBuilders === 0
                     ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
                     : 'bg-[#20293a] text-gray-400 hover:text-red-400'
@@ -344,7 +392,7 @@ export default function MaxTracker({ player }) {
 
           <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
             <span className="font-semibold text-amber-300">Target: {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}</span>
-            <span className="font-mono text-gray-400">~{stats?.estDaysWithFiveBuilders || 0}d left (5 Builders)</span>
+            <span className="font-mono text-gray-400">~{Math.round((stats?.totalBuilderDays || 4040) / Math.max(1, activeBuilders))}d left ({activeBuilders} Builders)</span>
           </div>
 
           {renderCountdownBoxes(builderUnits, activeBuilders > 0)}

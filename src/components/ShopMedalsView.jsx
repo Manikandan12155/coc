@@ -18,7 +18,12 @@ export default function ShopMedalsView({ player }) {
       shinyOre: 12400,
       glowyOre: 780,
       starryOre: 65,
-      eventMedals: 2100, // Temporary event currency (Mini-pass / Special Trader)
+      eventMedals: 2100,
+      bookOfHeroes: 1,
+      bookOfBuilding: 1,
+      hammerOfBuilding: 1,
+      builderPotions: 3,
+      researchPotions: 3,
     };
   });
 
@@ -282,6 +287,99 @@ export default function ShopMedalsView({ player }) {
                 {wallet.eventMedals.toLocaleString()}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* ⚡ MAGIC ITEMS VAULT (Instant Upgrade Accelerator) */}
+        <div className="mt-3.5 pt-3 border-t border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Magic Items Vault (Instant Time Reducers)</span>
+            </span>
+            <span className="text-[10px] text-gray-400 font-mono">1-Click Skip</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            {/* Book of Heroes */}
+            <div className="bg-[#161c28] p-2.5 rounded-xl border border-amber-500/30 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-amber-300 flex items-center gap-1">📖 Hero Book</span>
+                  <span className="text-[10px] font-mono font-bold text-gray-300">x{wallet.bookOfHeroes || 1}</span>
+                </div>
+                <p className="text-[10px] text-gray-400">Instantly finishes any ongoing hero upgrade (-8 days saved).</p>
+              </div>
+              <button
+                onClick={() => {
+                  alert('Book of Heroes Used! 8 Hero Days skipped successfully.');
+                  setWallet(prev => ({ ...prev, bookOfHeroes: Math.max(0, (prev.bookOfHeroes || 1) - 1) }));
+                }}
+                className="mt-2 w-full py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold rounded text-[11px] border border-amber-500/40 transition"
+              >
+                Use (-8 Days)
+              </button>
+            </div>
+
+            {/* Hammer of Building */}
+            <div className="bg-[#161c28] p-2.5 rounded-xl border border-yellow-500/30 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-yellow-300 flex items-center gap-1">🔨 Building Hammer</span>
+                  <span className="text-[10px] font-mono font-bold text-gray-300">x{wallet.hammerOfBuilding || 1}</span>
+                </div>
+                <p className="text-[10px] text-gray-400">Free cost + 0 time for TH18 defense (-16 days saved).</p>
+              </div>
+              <button
+                onClick={() => {
+                  alert('Hammer of Building Used! 16 Defense Days skipped successfully.');
+                  setWallet(prev => ({ ...prev, hammerOfBuilding: Math.max(0, (prev.hammerOfBuilding || 1) - 1) }));
+                }}
+                className="mt-2 w-full py-1 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-bold rounded text-[11px] border border-yellow-500/40 transition"
+              >
+                Use (-16 Days)
+              </button>
+            </div>
+
+            {/* Builder Potion */}
+            <div className="bg-[#161c28] p-2.5 rounded-xl border border-blue-500/30 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-blue-300 flex items-center gap-1">🧪 Builder Potion</span>
+                  <span className="text-[10px] font-mono font-bold text-gray-300">x{wallet.builderPotions || 3}</span>
+                </div>
+                <p className="text-[10px] text-gray-400">Boosts all 5 builders 10x for 1 hour (-45 hours saved).</p>
+              </div>
+              <button
+                onClick={() => {
+                  alert('Builder Potion Activated! 45 builder hours boosted across all builders.');
+                  setWallet(prev => ({ ...prev, builderPotions: Math.max(0, (prev.builderPotions || 3) - 1) }));
+                }}
+                className="mt-2 w-full py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 font-bold rounded text-[11px] border border-blue-500/40 transition"
+              >
+                Use (-45 Hours)
+              </button>
+            </div>
+
+            {/* Research Potion */}
+            <div className="bg-[#161c28] p-2.5 rounded-xl border border-purple-500/30 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-purple-300 flex items-center gap-1">⚗️ Research Potion</span>
+                  <span className="text-[10px] font-mono font-bold text-gray-300">x{wallet.researchPotions || 3}</span>
+                </div>
+                <p className="text-[10px] text-gray-400">Boosts Lab speed 24x for 1 hour (-23 hours saved in Lab).</p>
+              </div>
+              <button
+                onClick={() => {
+                  alert('Research Potion Activated! 23 Lab hours skipped.');
+                  setWallet(prev => ({ ...prev, researchPotions: Math.max(0, (prev.researchPotions || 3) - 1) }));
+                }}
+                className="mt-2 w-full py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 font-bold rounded text-[11px] border border-purple-500/40 transition"
+              >
+                Use (-24h Lab)
+              </button>
+            </div>
           </div>
         </div>
       </div>
