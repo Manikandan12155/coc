@@ -19,36 +19,58 @@ export default function MaxTracker({ player, onAskAI }) {
     return localStorage.getItem('coc_pet_working') !== 'false';
   });
   const [now, setNow] = useState(Date.now());
-  const [targetTimeMs, setTargetTimeMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
+
+  const [builderTargetMs, setBuilderTargetMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
+  const [labTargetMs, setLabTargetMs] = useState(() => Date.now() + (stats?.labDays || 2310) * 86400000);
+  const [petTargetMs, setPetTargetMs] = useState(() => Date.now() + (stats?.petDays || 698) * 86400000);
 
   useEffect(() => {
     localStorage.setItem('coc_active_builders', activeBuilders.toString());
     if (activeBuilders === 0) return;
     const daysAdjusted = Math.round((stats?.totalBuilderDays || 4040) / activeBuilders);
-    setTargetTimeMs(Date.now() + daysAdjusted * 86400000);
+    setBuilderTargetMs(Date.now() + daysAdjusted * 86400000);
   }, [totalRemainingDays, activeBuilders]);
 
   useEffect(() => {
-    if (activeBuilders === 0) return;
+    setLabTargetMs(Date.now() + (stats?.labDays || 2310) * 86400000);
+    setPetTargetMs(Date.now() + (stats?.petDays || 698) * 86400000);
+  }, [stats?.labDays, stats?.petDays]);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setNow(Date.now());
     }, 1000);
     return () => clearInterval(timer);
-  }, [activeBuilders]);
+  }, []);
 
-  const diffMs = Math.max(0, targetTimeMs - now);
-  const totalSecs = Math.floor(diffMs / 1000);
+  const getCountdownUnits = (targetMs, isWorking) => {
+    if (!isWorking) {
+      const totalSecs = Math.floor(Math.max(0, targetMs - now) / 1000);
+      const yrs = Math.floor(totalSecs / (365 * 86400));
+      const remY = totalSecs % (365 * 86400);
+      const mos = Math.floor(remY / (30 * 86400));
+      const remM = remY % (30 * 86400);
+      const days = Math.floor(remM / 86400);
+      return { yrs, mos, days, hrs: 0, mins: 0, secs: 0 };
+    }
+    const diff = Math.max(0, targetMs - now);
+    const totalSecs = Math.floor(diff / 1000);
+    const yrs = Math.floor(totalSecs / (365 * 86400));
+    const remY = totalSecs % (365 * 86400);
+    const mos = Math.floor(remY / (30 * 86400));
+    const remM = remY % (30 * 86400);
+    const days = Math.floor(remM / 86400);
+    const remD = remM % 86400;
+    const hrs = Math.floor(remD / 3600);
+    const remH = remD % 3600;
+    const mins = Math.floor(remH / 60);
+    const secs = remH % 60;
+    return { yrs, mos, days, hrs, mins, secs };
+  };
 
-  const countdownYears = Math.floor(totalSecs / (365 * 86400));
-  const remAfterYears = totalSecs % (365 * 86400);
-  const countdownMonths = Math.floor(remAfterYears / (30 * 86400));
-  const remAfterMonths = remAfterYears % (30 * 86400);
-  const countdownDays = Math.floor(remAfterMonths / 86400);
-  const remAfterDays = remAfterMonths % 86400;
-  const countdownHours = Math.floor(remAfterDays / 3600);
-  const remAfterHours = remAfterDays % 3600;
-  const countdownMinutes = Math.floor(remAfterHours / 60);
-  const countdownSeconds = remAfterHours % 60;
+  const builderUnits = getCountdownUnits(builderTargetMs, activeBuilders > 0);
+  const labUnits = getCountdownUnits(labTargetMs, labWorking);
+  const petUnits = getCountdownUnits(petTargetMs, petWorking);
 
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -219,6 +241,43 @@ export default function MaxTracker({ player, onAskAI }) {
     );
   };
 
+  const renderCountdownBoxes = (units, isWorking, accent = 'amber') => {
+    const isAmber = accent === 'amber';
+    const isPurple = accent === 'purple';
+    const numColor = !isWorking ? 'text-gray-400' : isPurple ? 'text-purple-300' : !isAmber ? 'text-emerald-300' : 'text-amber-300';
+    const secColor = !isWorking ? 'text-gray-500' : isPurple ? 'text-fuchsia-400' : 'text-emerald-400';
+    return (
+      <div className="grid grid-cols-6 gap-1 text-center font-mono mt-2">
+        <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+          <div className={`text-base font-black ${numColor}`}>{units.yrs}</div>
+          <div className="text-[9px] text-gray-400 font-sans uppercase">YRS</div>
+        </div>
+        <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+          <div className={`text-base font-black ${numColor}`}>{units.mos}</div>
+          <div className="text-[9px] text-gray-400 font-sans uppercase">MOS</div>
+        </div>
+        <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+          <div className={`text-base font-black ${numColor}`}>{units.days}</div>
+          <div className="text-[9px] text-gray-400 font-sans uppercase">DAYS</div>
+        </div>
+        <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+          <div className={`text-base font-black ${numColor}`}>{units.hrs}</div>
+          <div className="text-[9px] text-gray-400 font-sans uppercase">HRS</div>
+        </div>
+        <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
+          <div className={`text-base font-black ${numColor}`}>{units.mins}</div>
+          <div className="text-[9px] text-gray-400 font-sans uppercase">MINS</div>
+        </div>
+        <div className={`bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5 ${isWorking ? 'border-emerald-500/30' : ''}`}>
+          <div className={`text-base font-black ${secColor}`}>
+            {units.secs < 10 ? '0' + units.secs : units.secs}
+          </div>
+          <div className={`text-[9px] font-sans uppercase ${secColor}`}>SECS</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex-1 overflow-y-auto custom-scroll px-3 sm:px-4 py-4 pb-28 max-w-2xl mx-auto w-full space-y-4 font-normal">
       
@@ -247,158 +306,12 @@ export default function MaxTracker({ player, onAskAI }) {
             <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">VILLAGE COMPLETE</div>
           </div>
         </div>
-
-        {/* Dynamic Village 100% Finish Line Date */}
-        <div className="p-3 bg-[#131822] rounded-xl border border-amber-400/30 flex items-center justify-between text-xs mb-3">
-          <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-amber-400" />
-            <div>
-              <div className="text-[10px] text-gray-400 uppercase font-semibold">100% COMPLETE MAX PROJECTED DATE</div>
-              <div className="text-sm font-bold text-amber-300 font-mono">
-                {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}
-              </div>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-xs font-semibold text-gray-200">~{stats?.estDaysWithFiveBuilders || 0} Days Remaining</div>
-            <div className="text-[10px] text-gray-400">With 5 Active Builders (1 Kept Free for Walls / Exception)</div>
-          </div>
-        </div>
-        {/* Dedicated Laboratory & Pet House Timeline Cards with Exact Working/Idle Controllers */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
-          {/* Laboratory Max Card */}
-          <div className="p-3 bg-[#131826] rounded-xl border border-purple-500/30 flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-bold text-purple-300 flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${labWorking ? 'bg-purple-400 animate-pulse' : 'bg-red-500'}`}></span>
-                <span>⚗️ LABORATORY</span>
-              </span>
-              <span className="text-[10px] bg-purple-950/80 text-purple-300 px-1.5 py-0.5 rounded font-mono border border-purple-500/30">
-                {labWorking ? 'RESEARCHING' : 'LAB IDLE'}
-              </span>
-            </div>
-            
-            <div className="flex items-baseline justify-between my-1">
-              <div>
-                <div className="text-lg font-black text-purple-200 font-mono">
-                  ~{stats?.labDays || 0}d
-                </div>
-                <div className="text-[10px] text-gray-400 font-medium">
-                  {stats?.labRemainingLevels || 0} Upgrades Left (Troops/Spells/Sieges)
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xs font-bold text-purple-400 font-mono">
-                  {calculateTargetDate(stats?.labDays || 0)}
-                </div>
-                <div className="text-[9px] text-gray-500">Projected Max</div>
-              </div>
-            </div>
-
-            {/* Lab Status Toggle */}
-            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-1 text-xs">
-              <span className="text-[10px] text-gray-400 font-medium">Lab Status:</span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    setLabWorking(true);
-                    localStorage.setItem('coc_lab_working', 'true');
-                  }}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                    labWorking 
-                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30' 
-                      : 'bg-[#20293a] text-gray-400 hover:text-white'
-                  }`}
-                >
-                  ⚡ Working
-                </button>
-                <button
-                  onClick={() => {
-                    setLabWorking(false);
-                    localStorage.setItem('coc_lab_working', 'false');
-                  }}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                    !labWorking 
-                      ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
-                      : 'bg-[#20293a] text-gray-400 hover:text-red-400'
-                  }`}
-                >
-                  ⏸ Idle
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Pet House Max Card */}
-          <div className="p-3 bg-[#131826] rounded-xl border border-emerald-500/30 flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${petWorking ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
-                <span>🐾 PET HOUSE</span>
-              </span>
-              <span className="text-[10px] bg-emerald-950/80 text-emerald-300 px-1.5 py-0.5 rounded font-mono border border-emerald-500/30">
-                {petWorking ? 'UPGRADING' : 'PETS IDLE'}
-              </span>
-            </div>
-            
-            <div className="flex items-baseline justify-between my-1">
-              <div>
-                <div className="text-lg font-black text-emerald-200 font-mono">
-                  ~{stats?.petDays || 0}d
-                </div>
-                <div className="text-[10px] text-gray-400 font-medium">
-                  {stats?.petRemainingLevels || 0} Pet Levels Left (10 Pets)
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xs font-bold text-emerald-400 font-mono">
-                  {calculateTargetDate(stats?.petDays || 0)}
-                </div>
-                <div className="text-[9px] text-gray-500">Projected Max</div>
-              </div>
-            </div>
-
-            {/* Pet House Status Toggle */}
-            <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-1 text-xs">
-              <span className="text-[10px] text-gray-400 font-medium">Pet House:</span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    setPetWorking(true);
-                    localStorage.setItem('coc_pet_working', 'true');
-                  }}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                    petWorking 
-                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' 
-                      : 'bg-[#20293a] text-gray-400 hover:text-white'
-                  }`}
-                >
-                  ⚡ Working
-                </button>
-                <button
-                  onClick={() => {
-                    setPetWorking(false);
-                    localStorage.setItem('coc_pet_working', 'false');
-                  }}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                    !petWorking 
-                      ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
-                      : 'bg-[#20293a] text-gray-400 hover:text-red-400'
-                  }`}
-                >
-                  ⏸ Idle
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* â ³ LIVE SECONDS-BY-SECONDS TICKING COUNTDOWN */}
-        <div className="mt-3 p-3 bg-[#111622] rounded-xl border border-amber-500/30 shadow-inner">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-white/5">
+        {/* 1. BUILDER COUNTDOWN (Order 1) */}
+        <div className="mt-3 p-3.5 bg-[#111622] rounded-xl border border-amber-500/40 shadow-inner">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
             <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
               <span className={`w-2 h-2 rounded-full ${activeBuilders > 0 ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
-              <span>{activeBuilders > 0 ? `LIVE COUNTDOWN (${activeBuilders} BUILDERS WORKING)` : 'COUNTDOWN PAUSED (ALL BUILDERS IDLE)'}</span>
+              <span>{activeBuilders > 0 ? `BUILDERS: LIVE COUNTDOWN (${activeBuilders} ACTIVE)` : 'COUNTDOWN PAUSED (ALL BUILDERS IDLE)'}</span>
             </span>
             <span className="text-[10px] bg-emerald-950/70 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-medium flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -406,8 +319,7 @@ export default function MaxTracker({ player, onAskAI }) {
             </span>
           </div>
 
-          {/* Builder Working Status Controller */}
-          <div className="flex items-center justify-between bg-[#161c28] p-2 rounded-lg mb-2.5 border border-white/5 text-xs">
+          <div className="flex items-center justify-between bg-[#161c28] p-2 rounded-lg mb-2 border border-white/5 text-xs">
             <div className="flex items-center gap-1.5">
               <Hammer size={14} className={activeBuilders > 0 ? 'text-amber-400' : 'text-gray-500'} />
               <span className="text-[11px] font-semibold text-gray-300">Active Working Builders:</span>
@@ -434,41 +346,136 @@ export default function MaxTracker({ player, onAskAI }) {
                     ? 'bg-red-500 text-white shadow-md shadow-red-500/20'
                     : 'bg-[#20293a] text-gray-400 hover:text-red-400'
                 }`}
-                title="Pause Countdown"
+                title="Pause Countdown (All Builders Idle)"
               >
                 ⏸ Idle
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-6 gap-1 text-center font-mono">
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
-              <div className="text-base font-black text-amber-300">{countdownYears}</div>
-              <div className="text-[9px] text-gray-400 font-sans uppercase">YRS</div>
+          <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
+            <span className="font-semibold text-amber-300">Target: {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}</span>
+            <span className="font-mono text-gray-400">~{stats?.estDaysWithFiveBuilders || 0}d left (5 Builders)</span>
+          </div>
+
+          {renderCountdownBoxes(builderUnits, activeBuilders > 0, 'amber')}
+        </div>
+
+        {/* 2. LABORATORY COUNTDOWN (Order 2) */}
+        <div className="mt-3 p-3.5 bg-[#131526] rounded-xl border border-purple-500/40 shadow-inner">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
+            <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className={`w-2 h-2 rounded-full ${labWorking ? 'bg-purple-400 animate-pulse' : 'bg-red-500'}`}></span>
+              <span>{labWorking ? 'LABORATORY: LIVE RESEARCH COUNTDOWN' : 'LABORATORY PAUSED (LAB IDLE)'}</span>
+            </span>
+            <span className={`text-[10px] px-2 py-0.5 rounded font-mono border ${
+              labWorking ? 'bg-purple-950/80 text-purple-300 border-purple-500/30' : 'bg-red-950/80 text-red-400 border-red-500/30'
+            }`}>
+              {labWorking ? '⚡ RESEARCHING' : '⏸ LAB IDLE'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between bg-[#181a30] p-2 rounded-lg mb-2 border border-white/5 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm">⚗️</span>
+              <span className="text-[11px] font-semibold text-gray-300">Lab Research Status:</span>
             </div>
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
-              <div className="text-base font-black text-amber-300">{countdownMonths}</div>
-              <div className="text-[9px] text-gray-400 font-sans uppercase">MOS</div>
-            </div>
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
-              <div className="text-base font-black text-amber-300">{countdownDays}</div>
-              <div className="text-[9px] text-gray-400 font-sans uppercase">DAYS</div>
-            </div>
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
-              <div className="text-base font-black text-amber-300">{countdownHours}</div>
-              <div className="text-[9px] text-gray-400 font-sans uppercase">HRS</div>
-            </div>
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5">
-              <div className="text-base font-black text-amber-300">{countdownMinutes}</div>
-              <div className="text-[9px] text-gray-400 font-sans uppercase">MINS</div>
-            </div>
-            <div className="bg-[#18202d] py-1.5 px-1 rounded-lg border border-white/5 border-emerald-500/30">
-              <div className="text-base font-black text-emerald-400">{countdownSeconds < 10 ? '0' + countdownSeconds : countdownSeconds}</div>
-              <div className="text-[9px] text-emerald-400 font-sans uppercase">SECS</div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  setLabWorking(true);
+                  localStorage.setItem('coc_lab_working', 'true');
+                }}
+                className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
+                  labWorking 
+                    ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30' 
+                    : 'bg-[#20293a] text-gray-400 hover:text-white'
+                }`}
+              >
+                ⚡ Working
+              </button>
+              <button
+                onClick={() => {
+                  setLabWorking(false);
+                  localStorage.setItem('coc_lab_working', 'false');
+                }}
+                className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
+                  !labWorking 
+                    ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
+                    : 'bg-[#20293a] text-gray-400 hover:text-red-400'
+                }`}
+              >
+                ⏸ Idle
+              </button>
             </div>
           </div>
+
+          <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
+            <span className="font-semibold text-purple-300">Target: {calculateTargetDate(stats?.labDays || 0)}</span>
+            <span className="font-mono text-gray-400">~{stats?.labDays || 0}d ({stats?.labRemainingLevels || 0} Upgrades Left)</span>
+          </div>
+
+          {renderCountdownBoxes(labUnits, labWorking, 'purple')}
+        </div>
+
+        {/* 3. PET HOUSE COUNTDOWN (Order 3) */}
+        <div className="mt-3 p-3.5 bg-[#101b22] rounded-xl border border-emerald-500/40 shadow-inner">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
+            <span className="text-[10px] text-emerald-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className={`w-2 h-2 rounded-full ${petWorking ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`}></span>
+              <span>{petWorking ? 'PET HOUSE: LIVE COMPANION COUNTDOWN' : 'PET HOUSE PAUSED (PETS IDLE)'}</span>
+            </span>
+            <span className={`text-[10px] px-2 py-0.5 rounded font-mono border ${
+              petWorking ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30' : 'bg-red-950/80 text-red-400 border-red-500/30'
+            }`}>
+              {petWorking ? '🐾 UPGRADING' : '⏸ PETS IDLE'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between bg-[#14232c] p-2 rounded-lg mb-2 border border-white/5 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm">🐾</span>
+              <span className="text-[11px] font-semibold text-gray-300">Pet House Status:</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  setPetWorking(true);
+                  localStorage.setItem('coc_pet_working', 'true');
+                }}
+                className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
+                  petWorking 
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' 
+                    : 'bg-[#20293a] text-gray-400 hover:text-white'
+                }`}
+              >
+                ⚡ Working
+              </button>
+              <button
+                onClick={() => {
+                  setPetWorking(false);
+                  localStorage.setItem('coc_pet_working', 'false');
+                }}
+                className={`px-3 h-6 rounded text-[11px] font-bold transition-all ${
+                  !petWorking 
+                    ? 'bg-red-500 text-white shadow-md shadow-red-500/30' 
+                    : 'bg-[#20293a] text-gray-400 hover:text-red-400'
+                }`}
+              >
+                ⏸ Idle
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
+            <span className="font-semibold text-emerald-300">Target: {calculateTargetDate(stats?.petDays || 0)}</span>
+            <span className="font-mono text-gray-400">~{stats?.petDays || 0}d ({stats?.petRemainingLevels || 0} Pet Levels Left)</span>
+          </div>
+
+          {renderCountdownBoxes(petUnits, petWorking, 'emerald')}
+        </div>
       </div>
-      </div>
+
       {/* ðŸ·ï¸ Filter Pills Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1">
         {filterButtons.map((btn) => {
