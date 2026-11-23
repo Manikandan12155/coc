@@ -142,8 +142,12 @@ export default function MaxTracker({ player, onAskAI }) {
 
     let imgUrl = null;
     if (category === 'heroes' || category === 'builder') imgUrl = COC_ASSETS.heroes[name];
-    else if (category === 'dark' || category === 'elixir') imgUrl = COC_ASSETS.troops[name];
+    else if (category === 'dark' || category === 'elixir') imgUrl = COC_ASSETS.troops[name] || COC_ASSETS.pets?.[name];
     else if (category === 'spells') imgUrl = COC_ASSETS.spells[name];
+    else if (category === 'equipment') imgUrl = COC_ASSETS.equipment?.[name];
+    if (!imgUrl) {
+      imgUrl = COC_ASSETS.pets?.[name] || COC_ASSETS.equipment?.[name] || COC_ASSETS.troops[name];
+    }
 
     return (
       <div
@@ -153,10 +157,24 @@ export default function MaxTracker({ player, onAskAI }) {
       >
         <div className="w-12 h-12 rounded-xl bg-[#202937] p-1 border border-white/10 shrink-0 flex items-center justify-center overflow-hidden">
           {imgUrl ? (
-            <img src={imgUrl} alt={name} referrerPolicy="no-referrer" className="w-full h-full object-contain" />
-          ) : (
-            <span className="text-xl">âš”ï¸</span>
-          )}
+            <img 
+              src={imgUrl} 
+              alt={name} 
+              referrerPolicy="no-referrer" 
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const fallback = e.currentTarget.parentElement.querySelector('.fallback-badge');
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+          ) : null}
+          <div 
+            className="fallback-badge w-full h-full flex items-center justify-center text-amber-400 font-bold text-xs bg-slate-800 rounded" 
+            style={{ display: imgUrl ? 'none' : 'flex' }}
+          >
+            ⚔️
+          </div>
         </div>
 
         <div className="flex-1 min-w-0">
