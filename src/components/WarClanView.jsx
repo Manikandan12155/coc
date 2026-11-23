@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import { 
-  Award, Swords, TrendingUp, Calendar, Clock, Gift, Flame, Trophy, Shield, CheckCircle2, ChevronRight
+  Award, Swords, TrendingUp, Calendar, Clock, Gift, Flame, Trophy, Shield, 
+  CheckCircle2, Play, Video, Sparkles, Filter, ChevronRight, X
 } from 'lucide-react';
+import officialMediaData from '../data/cocOfficialMedia.json';
 
 export default function WarClanView({ player, clan }) {
-  const [activeSection, setActiveSection] = useState('all');
+  const [activeMediaFilter, setActiveMediaFilter] = useState('all'); // all, video, short
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
-  const events = [
+  // Filter only items <= 14 days old (2 weeks strictly)
+  const recentMedia = (officialMediaData || []).filter(item => item.daysAgo <= 14);
+
+  const filteredMedia = recentMedia.filter(item => {
+    if (activeMediaFilter === 'video') return item.type === 'video';
+    if (activeMediaFilter === 'short') return item.type === 'short';
+    return true;
+  });
+
+  const recurringEvents = [
     {
       title: "Clan War League (CWL)",
       date: "1st - 10th of Every Month",
       status: "Upcoming",
-      tag: "Major Event",
+      tag: "Major League",
       color: "border-amber-400 text-amber-300 bg-amber-500/20",
-      desc: "Earn massive League Medals for Hammer of Building and Hammers."
+      desc: "Earn massive League Medals for Hammer of Building & Hero upgrades."
     },
     {
       title: "Clan Games",
@@ -21,23 +33,23 @@ export default function WarClanView({ player, clan }) {
       status: "Monthly",
       tag: "Free Books",
       color: "border-emerald-400 text-emerald-300 bg-emerald-500/20",
-      desc: "Reach 4000 points to unlock top-tier reward (Book of Building / Rune of DE)."
+      desc: "Score 4,000 points to unlock top-tier reward (Book of Building / Rune of DE)."
     },
     {
       title: "Raid Weekend",
       date: "Every Friday 12:30 PM - Monday",
-      status: "Active / Recurring",
-      tag: "Weekly",
+      status: "Weekly",
+      tag: "Raid Medals",
       color: "border-purple-400 text-purple-300 bg-purple-500/20",
-      desc: "Complete 6 attacks to earn 1000 - 1500+ Raid Medals for research potions."
+      desc: "Execute 6 capital attacks to earn 1,000 - 1,500+ Raid Medals for research."
     },
     {
       title: "Trader Cycle Refresh",
       date: "Every Tuesday 05:30 AM",
       status: "Weekly",
-      tag: "Shop",
+      tag: "Free Ores",
       color: "border-blue-400 text-blue-300 bg-blue-500/20",
-      desc: "Weekly free potions and ores refresh in Trader shop."
+      desc: "Weekly free potions, glowy ores & starry ores in Trader shop."
     }
   ];
 
@@ -120,6 +132,138 @@ export default function WarClanView({ player, clan }) {
         </div>
       </div>
 
+      {/* Official Supercell Live Videos & Shorts (Past 2 Weeks Strictly) */}
+      <div className="coc-card rounded-2xl p-4 space-y-3">
+        <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-red-600/30 border border-red-500 flex items-center justify-center text-red-400">
+              <Video size={14} />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-white flex items-center gap-1.5">
+                <span>Official CoC Live Media</span>
+                <span className="text-[9px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded font-semibold uppercase">
+                  Last 2 Weeks Only
+                </span>
+              </h3>
+              <p className="text-[10px] text-gray-400">Official YouTube Videos & Shorts released in last 14 days</p>
+            </div>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex items-center gap-1 bg-[#121620] p-1 rounded-lg border border-white/5">
+            <button
+              onClick={() => setActiveMediaFilter('all')}
+              className={`px-2 py-0.5 text-[10px] rounded font-semibold transition ${
+                activeMediaFilter === 'all' ? 'bg-amber-500 text-slate-950 shadow' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              All ({recentMedia.length})
+            </button>
+            <button
+              onClick={() => setActiveMediaFilter('video')}
+              className={`px-2 py-0.5 text-[10px] rounded font-semibold transition ${
+                activeMediaFilter === 'video' ? 'bg-amber-500 text-slate-950 shadow' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Videos
+            </button>
+            <button
+              onClick={() => setActiveMediaFilter('short')}
+              className={`px-2 py-0.5 text-[10px] rounded font-semibold transition ${
+                activeMediaFilter === 'short' ? 'bg-amber-500 text-slate-950 shadow' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Shorts
+            </button>
+          </div>
+        </div>
+
+        {/* Video Player Modal/Banner if Selected */}
+        {selectedVideo && (
+          <div className="p-3 bg-[#121620] rounded-xl border border-amber-500/30 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1 truncate max-w-[80%]">
+                <Play size={12} className="text-amber-400 fill-amber-400" />
+                {selectedVideo.title}
+              </span>
+              <button 
+                onClick={() => setSelectedVideo(null)}
+                className="text-gray-400 hover:text-white p-1 rounded hover:bg-white/10"
+              >
+                <X size={15} />
+              </button>
+            </div>
+            
+            {/* Embedded Iframe Player */}
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-[#2e394c] bg-black">
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&rel=0`}
+                title={selectedVideo.title}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <div className="text-[11px] text-gray-400 flex items-center justify-between">
+              <span>Released: <strong className="text-gray-200">{selectedVideo.timeAgo}</strong></span>
+              <span className="text-[10px] bg-red-600/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">
+                Official Supercell Release
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Media Grid Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          {filteredMedia.map((m) => {
+            const isPlaying = selectedVideo?.id === m.id;
+            return (
+              <div
+                key={m.id}
+                onClick={() => setSelectedVideo(m)}
+                className={`group cursor-pointer rounded-xl bg-[#191f2b] border overflow-hidden transition-all duration-200 flex flex-col justify-between ${
+                  isPlaying 
+                    ? 'border-amber-400 ring-1 ring-amber-400/50 shadow-lg' 
+                    : 'border-[#2e394c] hover:border-amber-500/50 hover:bg-[#1f2737]'
+                }`}
+              >
+                {/* Thumbnail Container */}
+                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden">
+                  <img 
+                    src={m.thumbnail} 
+                    alt={m.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  {/* Play Icon Overlay */}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:bg-black/20 transition-all">
+                    <div className="w-8 h-8 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Play size={14} className="fill-white ml-0.5" />
+                    </div>
+                  </div>
+                  {/* Badge */}
+                  <div className="absolute bottom-1 right-1 bg-black/80 backdrop-blur-sm text-[9px] font-mono px-1.5 py-0.5 rounded text-white border border-white/10">
+                    {m.type === 'short' ? '⚡ Short' : '🎬 Video'}
+                  </div>
+                </div>
+
+                {/* Video Info */}
+                <div className="p-2 flex flex-col flex-1 justify-between">
+                  <h4 className="text-[11px] font-medium text-gray-200 line-clamp-2 leading-snug group-hover:text-amber-300 transition">
+                    {m.title}
+                  </h4>
+                  <div className="flex items-center justify-between text-[10px] text-gray-400 mt-2 pt-1 border-t border-white/5">
+                    <span className="font-mono text-amber-400/90">{m.timeAgo}</span>
+                    <span className="text-[9px] text-gray-500">Supercell</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Official Events Calendar Section */}
       <div className="coc-card rounded-2xl p-4 space-y-3">
         <div className="flex items-center justify-between border-b border-white/5 pb-2">
@@ -131,7 +275,7 @@ export default function WarClanView({ player, clan }) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          {events.map((e, idx) => (
+          {recurringEvents.map((e, idx) => (
             <div key={idx} className="bg-[#191f2b] p-3 rounded-xl border border-[#2e394c] flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-1">

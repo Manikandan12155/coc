@@ -6,6 +6,7 @@ import LabMaxView from './components/LabMaxView';
 import PetsMaxView from './components/PetsMaxView';
 import ShopMedalsView from './components/ShopMedalsView';
 import WarClanView from './components/WarClanView';
+import UpdatesView from './components/UpdatesView';
 import EventsView from './components/EventsView';
 import { fetchCoCPlayerData, fetchClanData } from './services/cocApi';
 import { RefreshCw, Search, X } from 'lucide-react';
@@ -154,6 +155,7 @@ export default function App() {
         {activeTab === 'pets' && <PetsMaxView player={player} />}
         {activeTab === 'shop' && <ShopMedalsView player={player} />}
         {activeTab === 'war' && <WarClanView player={player} clan={clan} onAskAI={handleAskAI} />}
+        {activeTab === 'updates' && <UpdatesView />}
       </main>
 
       {/* Mobile Bottom Navigation */}

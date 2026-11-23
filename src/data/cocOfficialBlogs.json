@@ -1,0 +1,112 @@
+[
+  {
+    "id": "th19-announcement",
+    "title": "Town Hall 19 Sneak Peek: The Ceiling Just Moved & Squad Troops Unleashed!",
+    "subtitle": "Everything you need to know about Town Hall 19, new defenses, Titan Duke siege, and multi-tier Squad mechanics.",
+    "author": "Supercell Clash Dev Team",
+    "category": "Major Update",
+    "badgeColor": "bg-amber-500/20 text-amber-300 border-amber-500/30",
+    "published": "2026-11-16T11:30:00Z",
+    "timeAgo": "6d ago",
+    "readTime": "4 min read",
+    "banner": "https://i.ytimg.com/vi/CeQ9o8_LYb4/hqdefault.jpg",
+    "videoId": "CeQ9o8_LYb4",
+    "isFeatured": true,
+    "tags": [
+      "Town Hall 19",
+      "Sneak Peek",
+      "New Defenses",
+      "Troops"
+    ],
+    "content": [
+      "The biggest update of the year has arrived! Clash of Clans officially unveils Town Hall 19 with a majestic volcanic obsidian architecture.",
+      "### What is New in Town Hall 19?",
+      "- **New Max Hero Levels:** Level caps raised for Barbarian King, Archer Queen, Grand Warden, and Royal Champion.",
+      "- **Squad Troops:** Deploy whole squads with a single tactical tap, altering war strategies completely.",
+      "- **Titan Duke Siege Machine:** A flying behemoth with armor plating, built like a flying fortress to crack open heavy core compartments.",
+      "- **Defense Merging Tier 2:** Merged defenses receive additional visual enhancements and secondary passive blast triggers.",
+      "### When does the update roll out?",
+      "Town Hall 19 is rolling out worldwide this week across iOS and Android app stores. Prepare your builders, stock your hammers, and ensure your treasury is full!"
+    ]
+  },
+  {
+    "id": "titan-duke-siege-deepdive",
+    "title": "Meet Titan Duke: Built Like a Siege Machine\u2026 With Wings!",
+    "subtitle": "Deep tactical analysis of the new airborne Siege Machine designed to breach high-density core bases.",
+    "author": "Clash Strategy Team",
+    "category": "Strategy & Guide",
+    "badgeColor": "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    "published": "2026-11-13T08:01:00Z",
+    "timeAgo": "10d ago",
+    "readTime": "3 min read",
+    "banner": "https://i.ytimg.com/vi/Mwxu-h_GQRw/hqdefault.jpg",
+    "videoId": "Mwxu-h_GQRw",
+    "isFeatured": false,
+    "tags": [
+      "Siege Machine",
+      "Titan Duke",
+      "Air Attack",
+      "TH18/19"
+    ],
+    "content": [
+      "Meet the newest aerial powerhouse joining the Siege Workshop: Titan Duke! Unlike the Stone Slammer, Titan Duke combines relentless forward momentum with high-durability wing shields.",
+      "### Tactical Strengths:",
+      "- **High HP Pool:** Soaks Air Defenses and Single-Target Inferno Towers while pushing deep into the base.",
+      "- **Payload Delivery:** Carries full Clan Castle reinforcements and safely deploys them directly on Town Hall weapons upon impact.",
+      "- **Synergy:** Incredible pairing with Root Riders, Electro Titans, and Dragon spam compositions."
+    ]
+  },
+  {
+    "id": "world-finals-2026-recap",
+    "title": "Clash of Clans World Championship Finals 2026: Epic Highlights & Meta Breakdown",
+    "subtitle": "Relive the nail-biting finishes, flawless 3-star attacks, and world champion crowning moments in Helsinki.",
+    "author": "Clash Esports",
+    "category": "Esports & Worlds",
+    "badgeColor": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    "published": "2026-11-15T21:24:00Z",
+    "timeAgo": "7d ago",
+    "readTime": "5 min read",
+    "banner": "https://i.ytimg.com/vi/YyfyWlsjgV4/hqdefault.jpg",
+    "videoId": "YyfyWlsjgV4",
+    "isFeatured": false,
+    "tags": [
+      "World Finals",
+      "Esports",
+      "Championship",
+      "Meta"
+    ],
+    "content": [
+      "Two intense days of world-class Clash warfare have concluded at the Clash Worlds arena! The highest skill level ever displayed in competitive gaming.",
+      "### Meta Attack Highlights:",
+      "- **Fireball Warden Strategies:** Masterclasses in wiping out the Eagle and Monolith in a single opening nuke.",
+      "- **Spiky Ball + Giant Gauntlet Clears:** Over 68% of pro bases featured heavy King pathing down the flanks.",
+      "- **Base Building Counter-Meta:** Trap placements designed specifically to disrupt blimp clone payloads."
+    ]
+  },
+  {
+    "id": "wasteland-skins-tarnished-titans",
+    "title": "November Season: Wasteland Hero Skins & Tarnished Titans War Scenery Now Live",
+    "subtitle": "Bring ancient post-apocalyptic chaos to your home village and war matches with the latest cosmetic set.",
+    "author": "Supercell Art & Design",
+    "category": "Skins & Scenery",
+    "badgeColor": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    "published": "2026-11-15T10:01:00Z",
+    "timeAgo": "8d ago",
+    "readTime": "2 min read",
+    "banner": "https://i.ytimg.com/vi/BeufG5sD1Os/hqdefault.jpg",
+    "videoId": "BeufG5sD1Os",
+    "isFeatured": false,
+    "tags": [
+      "Skins",
+      "Scenery",
+      "Gold Pass",
+      "Cosmetics"
+    ],
+    "content": [
+      "The November Gold Pass brings the rugged Wasteland King and Queen skins, accompanied by custom visual sound effects and attack animations.",
+      "### What is Included:",
+      "- **Tarnished Titans Scenery:** Features animated lava rifts, dragon skeletons, and interactive environmental elements.",
+      "- **Custom Soundtracks:** Atmospheric tribal war drums replacing standard village audio during war spectating."
+    ]
+  }
+]
