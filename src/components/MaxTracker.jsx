@@ -31,28 +31,39 @@ export default function MaxTracker({ player }) {
     localStorage.setItem(`coc_defenses_${playerTag}`, JSON.stringify(updated));
   };
 
-  // Calculate true dynamic remaining defense builder days from user levels
-  const calculatedDefenseDays = Object.entries(defenseLevels).reduce((acc, [name, lvl]) => {
-    const defObj = COC_ASSETS.defenses.find(d => d.name === name);
-    if (!defObj) return acc;
-    const remainingLevels = Math.max(0, defObj.maxLvl - lvl);
-    return acc + (remainingLevels * (defObj.avgDaysPerLvl || 14));
+  // Calculate true dynamic remaining builder days from ALL user levels (Defenses, Traps, Army, Economy)
+  const allInteractiveItems = [
+    ...COC_ASSETS.defenses,
+    ...COC_ASSETS.traps,
+    ...COC_ASSETS.buildings,
+    ...COC_ASSETS.economy
+  ];
+
+  const calculatedStructureDays = Object.entries(defenseLevels).reduce((acc, [name, lvl]) => {
+    const itemObj = allInteractiveItems.find(d => d.name === name);
+    if (!itemObj) return acc;
+    const remainingLevels = Math.max(0, itemObj.maxLvl - lvl);
+    return acc + (remainingLevels * (itemObj.avgDaysPerLvl || 14));
   }, 0);
 
-  const dynamicTotalBuilderDays = (stats?.heroDays || 2160) + calculatedDefenseDays;
+  const dynamicTotalBuilderDays = (stats?.heroDays || 2160) + calculatedStructureDays;
 
   const [activeBuilders, setActiveBuilders] = useState(() => {
     return parseInt(localStorage.getItem('coc_active_builders') || '5', 10);
   });
   const [now, setNow] = useState(Date.now());
-  const [builderTargetMs, setBuilderTargetMs] = useState(() => Date.now() + totalRemainingDays * 86400000);
+  const [builderTargetMs, setBuilderTargetMs] = useState(() => {
+    const initialDays = Math.round((dynamicTotalBuilderDays || 4040) / 5);
+    return Date.now() + initialDays * 86400000;
+  });
 
+  // Re-calculate target whenever user changes level (+/-) or active builders change
   useEffect(() => {
     localStorage.setItem('coc_active_builders', activeBuilders.toString());
     if (activeBuilders === 0) return;
     const daysAdjusted = Math.round((dynamicTotalBuilderDays || 4040) / activeBuilders);
     setBuilderTargetMs(Date.now() + daysAdjusted * 86400000);
-  }, [totalRemainingDays, activeBuilders]);
+  }, [dynamicTotalBuilderDays, activeBuilders]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -482,7 +493,7 @@ export default function MaxTracker({ player }) {
           </div>
 
           <div className="flex items-center justify-between text-xs px-0.5 text-gray-300">
-            <span className="font-semibold text-amber-300">Target: {calculateTargetDate(stats?.estDaysWithFiveBuilders || 0)}</span>
+            <span className="font-semibold text-amber-300">Target: {calculateTargetDate(Math.round((dynamicTotalBuilderDays || 4040) / Math.max(1, activeBuilders)))}</span>
             <span className="font-mono text-gray-400">~{Math.round((dynamicTotalBuilderDays || 4040) / Math.max(1, activeBuilders))}d left ({activeBuilders} Builders)</span>
           </div>
 
