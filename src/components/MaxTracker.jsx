@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { calculateMaxStats } from '../services/cocApi';
 import { COC_ASSETS } from '../services/cocAssets';
+import TH18StrategyModal from './TH18StrategyModal';
 import { 
-  Hammer, ChevronDown, ChevronUp, Sparkles, Shield, Crown, Wrench, Calendar, CheckCircle2, Zap, Building, Coins, Crosshair
+  Hammer, ChevronDown, ChevronUp, Sparkles, Shield, Crown, Wrench, Calendar, CheckCircle2, Zap, Building, Coins, Crosshair, BookOpen
 } from 'lucide-react';
 
 export default function MaxTracker({ player }) {
+  const [isStrategyModalOpen, setIsStrategyModalOpen] = useState(false);
   const stats = calculateMaxStats(player);
   const totalRemainingDays = stats?.estDaysWithFiveBuilders || 808;
 
@@ -418,9 +420,14 @@ export default function MaxTracker({ player }) {
             <div>
               <h2 className="text-base font-semibold text-white tracking-wide flex items-center gap-2">
                 <span>{player.name}</span>
-                <span className="bg-amber-400/20 text-amber-300 font-medium px-2 py-0.5 rounded text-[11px] border border-amber-400/30">
-                  TH {player.townHallLevel}
-                </span>
+                <button
+                  onClick={() => setIsStrategyModalOpen(true)}
+                  className="bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-bold px-2 py-0.5 rounded text-[11px] border border-amber-400/40 hover:border-amber-300 flex items-center gap-1 active:scale-95 transition shadow-sm"
+                  title="Click for Full TH18 Strategy & Maxing Roadmap"
+                >
+                  <span>TH {player.townHallLevel}</span>
+                  <span className="text-[9px] bg-amber-400 text-slate-950 px-1 rounded font-black">PRO TIPS</span>
+                </button>
               </h2>
               <p className="text-xs text-gray-400 mt-0.5 font-medium">
                 {player.clan?.name || 'No Clan'} • Lvl {player.expLevel} • 🏆 {player.trophies}
@@ -746,6 +753,13 @@ export default function MaxTracker({ player }) {
           {activeFilter === 'maxed' && maxedItems.map(item => renderItemCard(item.name, item.level, item.maxLevel, item.category, item.avgDays))}
         </div>
       )}
+
+      {/* Full-Screen TH18 Strategy & Maxing Roadmap Modal */}
+      <TH18StrategyModal 
+        isOpen={isStrategyModalOpen} 
+        onClose={() => setIsStrategyModalOpen(false)} 
+        player={player} 
+      />
     </div>
   );
 }
