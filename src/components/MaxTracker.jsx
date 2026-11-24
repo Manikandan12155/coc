@@ -136,6 +136,10 @@ export default function MaxTracker({ player }) {
 
   if (!player) return null;
 
+  const mainHeroes = (player.heroes || []).filter(h => h.village === 'home');
+  const builderHeroes = (player.heroes || []).filter(h => h.village === 'builderBase');
+  const heroEquipment = player.heroEquipment || [];
+
   // Strict Priority Order for Heroes (Grand Warden & RC first, King & Queen, Minion Prince, Dragon Duke)
   const HERO_PRIORITY = {
     'Grand Warden': 1,
@@ -757,7 +761,7 @@ export default function MaxTracker({ player }) {
       {!searchQuery && activeFilter !== 'all' && (
         <div className="space-y-2">
           {activeFilter === 'quickwins' && quickWins.map(item => renderItemCard(item.name, item.level, item.maxLevel, item.category, item.avgDays))}
-          {activeFilter === 'heroes' && mainHeroes.map(h => renderItemCard(h.name, h.level, h.maxLevel, 'heroes', 8))}
+          {activeFilter === 'heroes' && sortedHeroes.map(h => renderItemCard(h.name, h.level, h.maxLevel, 'heroes', 8))}
           {activeFilter === 'defenses' && COC_ASSETS.defenses.map(d => renderGenericStaticCard(d))}
           {activeFilter === 'traps' && COC_ASSETS.traps.map(t => renderGenericStaticCard(t))}
           {activeFilter === 'buildings' && COC_ASSETS.buildings.map(b => renderGenericStaticCard(b))}
