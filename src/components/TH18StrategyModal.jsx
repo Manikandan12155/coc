@@ -409,3 +409,4 @@ export default function TH18StrategyModal({ isOpen, onClose, player }) {
     </div>
   );
 }
+

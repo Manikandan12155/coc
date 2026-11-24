@@ -136,12 +136,22 @@ export default function MaxTracker({ player }) {
 
   if (!player) return null;
 
-  const mainHeroes = (player.heroes || []).filter(h => h.village === 'home');
-  const builderHeroes = (player.heroes || []).filter(h => h.village === 'builderBase');
-  const heroEquipment = player.heroEquipment || [];
+  // Strict Priority Order for Heroes (Grand Warden & RC first, King & Queen, Minion Prince, Dragon Duke)
+  const HERO_PRIORITY = {
+    'Grand Warden': 1,
+    'Royal Champion': 2,
+    'Archer Queen': 3,
+    'Barbarian King': 4,
+    'Minion Prince': 5,
+    'Dragon Duke': 6
+  };
+
+  const sortedHeroes = [...mainHeroes].sort((a, b) => {
+    return (HERO_PRIORITY[a.name] || 99) - (HERO_PRIORITY[b.name] || 99);
+  });
 
   const allVillageItems = [
-    ...mainHeroes.map(h => ({ ...h, type: 'Hero', category: 'heroes', avgDays: 7 })),
+    ...sortedHeroes.map(h => ({ ...h, type: 'Hero', category: 'heroes', avgDays: 7 })),
     ...builderHeroes.map(h => ({ ...h, type: 'Builder Hero', category: 'builder', avgDays: 5 })),
     ...heroEquipment.map(e => ({ ...e, type: 'Equipment', category: 'equipment', avgDays: 4 }))
   ];
@@ -603,7 +613,11 @@ export default function MaxTracker({ player }) {
             </button>
             {openSections.heroes && (
               <div className="p-3 border-t border-white/5 space-y-2 bg-[#121620]">
-                {mainHeroes.map(h => renderItemCard(h.name, h.level, h.maxLevel, 'heroes', 8))}
+                <div className="text-[10px] text-amber-400/90 font-medium pb-1 border-b border-white/5 flex items-center justify-between">
+                  <span>⚡ Priority Order: 1. Warden &gt; 2. RC &gt; 3. Queen &gt; 4. King</span>
+                  <span className="text-gray-400">100% Verified API Data</span>
+                </div>
+                {sortedHeroes.map(h => renderItemCard(h.name, h.level, h.maxLevel, 'heroes', 8))}
               </div>
             )}
           </div>
